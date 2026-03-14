@@ -42,6 +42,7 @@ Add your `.env.local`:
 ```
 VITE_SUPABASE_URL=your_url
 VITE_SUPABASE_ANON_KEY=your_key
+VITE_GEMINI_API_KEY=your API key
 ```
 
 ## 👩‍💻 Author

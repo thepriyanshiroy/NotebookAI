@@ -9,6 +9,32 @@ import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
+// 🔥 Retry helper for Gemini API
+const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
+  try {
+    const res = await fetch(url, options);
+
+    if (!res.ok) {
+      const text = await res.text();
+
+      if (res.status >= 500 && retries > 0) {
+        await new Promise((r) => setTimeout(r, delay));
+        return fetchWithRetry(url, options, retries - 1, delay * 2);
+      }
+
+      throw new Error(text);
+    }
+
+    return res;
+  } catch (err) {
+    if (retries > 0) {
+      await new Promise((r) => setTimeout(r, delay));
+      return fetchWithRetry(url, options, retries - 1, delay * 2);
+    }
+    throw err;
+  }
+};
+
 export default function SavedPage() {
   const [pdfs, setPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -118,6 +144,8 @@ export default function SavedPage() {
   };
 
   const handleSummarize = async (pdf) => {
+    if (summarizing) return; // 🔒 prevent multiple calls
+
     try {
       setError(null);
       setSummarizing(true);
@@ -142,38 +170,31 @@ export default function SavedPage() {
 
       if (!GEMINI_KEY) {
         setError("Gemini API key missing in .env");
-        setSummarizing(false);
         return;
       }
 
-      // ── Extract text using PDF.js ──────────────────────
-
+      // 🔥 Extract text
       const pdfDoc = await pdfjsLib.getDocument(urlData.signedUrl).promise;
 
       let fullText = "";
-      const maxPages = Math.min(pdfDoc.numPages, 15);
+      const maxPages = Math.min(pdfDoc.numPages, 10); // reduce load
 
       for (let i = 1; i <= maxPages; i++) {
         const page = await pdfDoc.getPage(i);
         const content = await page.getTextContent();
 
-        fullText +=
-          `\n--- Page ${i} ---\n` +
-          content.items.map((item) => item.str || "").join(" ");
+        fullText += content.items.map((item) => item.str || "").join(" ");
       }
 
-      console.log("[PDF] Extracted text length:", fullText.length);
-
       if (!fullText.trim()) {
-        setError("Could not extract text — PDF may be scanned or image-only");
-        setSummarizing(false);
+        setError("Could not extract text from PDF");
         return;
       }
 
-      // ── Send to Gemini ─────────────────────────────────
-
-      const res = await fetch(
+      // 🔥 Gemini request with retry
+      const res = await fetchWithRetry(
         `/gemini/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
+        //`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -182,31 +203,16 @@ export default function SavedPage() {
               {
                 parts: [
                   {
-                    text: `You are a helpful study assistant.
+                    text: `Summarize this PDF for a student in a structured way:
 
-Summarize the following PDF for a student in a clear and structured way.
+${fullText.slice(0, 15000)}
 
-PDF Title: "${pdf.name}"
-
-Content:
-${fullText.slice(0, 20000)}
-
-Provide a detailed but concise summary with these sections:
-
-1. Overview  
-Give a short explanation of what this document is about (4–5 sentences).
-
-2. Key Concepts / Topics  
-List the main ideas or topics discussed. Use bullet points and include short explanations.
-
-3. Important Details  
-Explain important processes, definitions, or mechanisms mentioned in the document.
-
-4. Examples or Applications  
-If the document includes examples or real-world applications, summarize them briefly.
-
-5. Final Takeaways  
-Write 3–4 sentences summarizing the most important points a student should remember.`,
+Give:
+1. Overview
+2. Key points
+3. Important details
+4. Examples
+5. Final takeaway`,
                   },
                 ],
               },
@@ -215,19 +221,12 @@ Write 3–4 sentences summarizing the most important points a student should rem
         },
       );
 
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error(text);
-      }
-
       const result = await res.json();
-      console.log("[Gemini] Response:", result);
 
       let summary = "";
 
       if (result?.candidates?.length) {
-        const parts = result.candidates[0].content?.parts || [];
-        summary = parts
+        summary = result.candidates[0].content.parts
           .map((p) => p.text || "")
           .join("")
           .trim();
@@ -244,7 +243,12 @@ Write 3–4 sentences summarizing the most important points a student should rem
       );
     } catch (err) {
       console.error("[Gemini] Error:", err);
-      setError("Summary failed: " + err.message);
+
+      if (err.message.includes("503")) {
+        setError("Server is busy. Try again in a few seconds.");
+      } else {
+        setError("Summary failed: " + err.message);
+      }
     } finally {
       setSummarizing(false);
     }
@@ -274,14 +278,7 @@ Write 3–4 sentences summarizing the most important points a student should rem
 
   return (
     <AppLayout notebookCount={null}>
-      <div
-        style={{
-          display: "flex",
-          flex: 1,
-          overflow: "hidden",
-          position: "relative",
-        }}
-      >
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {!previewPdf && (
           <PdfList
             pdfs={pdfs}
@@ -303,7 +300,7 @@ Write 3–4 sentences summarizing the most important points a student should rem
         )}
 
         {showSplit && (
-          <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+          <div style={{ flex: 1, display: "flex" }}>
             <PdfPreview pdf={previewPdf} splitMode onClose={closeAll} />
             <AiSummaryPanel
               summarizing={summarizing}

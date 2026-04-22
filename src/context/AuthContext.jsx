@@ -10,18 +10,48 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
+    const getInitialSession = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) {
+          console.warn("Session error:", error);
+          await supabase.auth.signOut(); // only on real error
+          setSession(null);
+          setUser(null);
+        } else if (!data.session) {
+          // No session → just set state, don't call API
+          setSession(null);
+          setUser(null);
+        } else {
+          setSession(data.session);
+          setUser(data.session.user);
+        }
+      } catch (err) {
+        console.error("Failed to retrieve session:", err);
+
+        await supabase.auth.signOut();
+        setSession(null);
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getInitialSession();
 
     // Listen for auth changes (login, logout, token refresh)
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        setSession(null);
+        setUser(null);
+      } else {
+        setSession(session);
+        setUser(session.user);
+      }
+
       setLoading(false);
     });
 
@@ -45,7 +75,12 @@ export function AuthProvider({ children }) {
       email,
       password,
     });
-    if (error) throw error;
+
+    if (error) {
+      console.error("LOGIN ERROR:", error.message);
+      throw error;
+    }
+
     return data;
   };
 

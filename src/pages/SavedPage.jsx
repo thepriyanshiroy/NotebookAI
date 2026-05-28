@@ -278,6 +278,11 @@ Give:
 
   return (
     <AppLayout notebookCount={null}>
+      {error && (
+        <div style={{ padding: "10px", background: "red", color: "white", textAlign: "center" }}>
+          {error} <button onClick={() => setError(null)}>X</button>
+        </div>
+      )}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {!previewPdf && (
           <PdfList

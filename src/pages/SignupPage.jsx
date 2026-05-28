@@ -1,32 +1,40 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const signupSchema = z.object({
+  fullName: z.string().min(1, { message: "Full Name is required" }),
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(12, { message: "Password must be at least 12 characters" }),
+});
 
 export default function SignupPage() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(signupSchema),
+  });
+
+  const onSubmit = (data) => {
     setError("");
-    if (password.length < 12) {
-      setError("Password must be at least 12 characters");
-      return;
-    }
-    setLoading(true);
-    try {
-      await signUp({ email, password, full_name: fullName });
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    startTransition(async () => {
+      try {
+        await signUp({ email: data.email, password: data.password, full_name: data.fullName });
+        navigate("/dashboard");
+      } catch (err) {
+        setError(err.message);
+      }
+    });
   };
 
   return (
@@ -66,19 +74,20 @@ export default function SignupPage() {
             </div>
           )}
 
-          <form onSubmit={handleSignup} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-white/50 text-xs uppercase tracking-widest">
                 Full Name
               </label>
               <input
                 type="text"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
+                {...register("fullName")}
                 placeholder="Alex Rivera"
-                required
                 className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-cyan-400/60 focus:bg-cyan-400/5 focus:ring-2 focus:ring-cyan-400/10 transition"
               />
+              {errors.fullName && (
+                <span className="text-red-400 text-xs mt-1">{errors.fullName.message}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -87,12 +96,13 @@ export default function SignupPage() {
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                {...register("email")}
                 placeholder="you@university.edu"
-                required
                 className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-cyan-400/60 focus:bg-cyan-400/5 focus:ring-2 focus:ring-cyan-400/10 transition"
               />
+              {errors.email && (
+                <span className="text-red-400 text-xs mt-1">{errors.email.message}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -104,20 +114,21 @@ export default function SignupPage() {
               </label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                {...register("password")}
                 placeholder="••••••••••••"
-                required
                 className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-cyan-400/60 focus:bg-cyan-400/5 focus:ring-2 focus:ring-cyan-400/10 transition"
               />
+              {errors.password && (
+                <span className="text-red-400 text-xs mt-1">{errors.password.message}</span>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full mt-2 bg-cyan-400 hover:bg-cyan-300 disabled:bg-cyan-400/40 disabled:cursor-not-allowed text-black font-bold text-sm tracking-widest uppercase py-3.5 rounded-xl transition shadow-[0_0_30px_rgba(34,211,238,0.3)] hover:shadow-[0_0_40px_rgba(34,211,238,0.5)]"
             >
-              {loading ? "Creating account..." : "Create Account"}
+              {isPending ? "Creating account..." : "Create Account"}
             </button>
           </form>
 

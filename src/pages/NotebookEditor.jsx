@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import AppLayout from "../components/layout/AppLayout";
@@ -14,7 +14,7 @@ export default function NotebookEditor() {
   const [activeId, setActiveId] = useState(null);
   const [saved, setSaved] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [saveTimer, setSaveTimer] = useState(null);
+  const saveTimerRef = useRef(null);
   const [error, setError] = useState(null);
 
   const active = sections.find((s) => s.id === activeId) ?? null;
@@ -56,21 +56,19 @@ export default function NotebookEditor() {
 
   const triggerAutosave = useCallback((sectionId, title, content) => {
     setSaved(false);
-    setSaveTimer((prev) => {
-      if (prev) clearTimeout(prev);
-      return setTimeout(async () => {
-        try {
-          const { error } = await supabase
-            .from("sections")
-            .update({ title, content, updated_at: new Date().toISOString() })
-            .eq("id", sectionId);
-          if (error) throw error;
-          setSaved(true);
-        } catch (err) {
-          console.error("Autosave error:", err);
-        }
-      }, 1500);
-    });
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(async () => {
+      try {
+        const { error } = await supabase
+          .from("sections")
+          .update({ title, content, updated_at: new Date().toISOString() })
+          .eq("id", sectionId);
+        if (error) throw error;
+        setSaved(true);
+      } catch (err) {
+        console.error("Autosave error:", err);
+      }
+    }, 1500);
   }, []);
 
   const handleTitleChange = (val) => {

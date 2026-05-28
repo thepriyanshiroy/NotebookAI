@@ -9,7 +9,7 @@ const COLORS = [
   { primary: "#fbbf24", secondary: "#d97706", glow: "rgba(251,191,36,0.35)" },
 ];
 
-export const getColorObj = (hex) =>
+const getColorObj = (hex) =>
   COLORS.find((c) => c.primary === hex) || COLORS[0];
 
 function timeAgo(dateStr) {

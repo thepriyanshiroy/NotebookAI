@@ -1,27 +1,39 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(1, { message: "Password is required" }),
+});
 
 export default function LoginPage() {
   const { signIn } = useAuth();
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+  });
+
+  const onSubmit = (data) => {
     setError("");
-    setLoading(true);
-    try {
-      await signIn({ email, password });
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
+    startTransition(async () => {
+      try {
+        await signIn({ email: data.email, password: data.password });
+        navigate("/dashboard");
+      } catch (err) {
+        setError(err.message);
+      }
+    });
   };
 
   return (
@@ -61,21 +73,21 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form name="login" onSubmit={handleLogin} className="space-y-4">
+          <form name="login" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-white/50 text-xs uppercase tracking-widest">
                 Email
               </label>
               <input
                 type="email"
-                name="email"
+                {...register("email")}
                 autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@university.edu"
-                required
                 className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-cyan-400/60 focus:bg-cyan-400/5 focus:ring-2 focus:ring-cyan-400/10 transition"
               />
+              {errors.email && (
+                <span className="text-red-400 text-xs mt-1">{errors.email.message}</span>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -84,22 +96,22 @@ export default function LoginPage() {
               </label>
               <input
                 type="password"
-                name="password"
+                {...register("password")}
                 autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                required
                 className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/20 outline-none focus:border-cyan-400/60 focus:bg-cyan-400/5 focus:ring-2 focus:ring-cyan-400/10 transition"
               />
+              {errors.password && (
+                <span className="text-red-400 text-xs mt-1">{errors.password.message}</span>
+              )}
             </div>
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={isPending}
               className="w-full mt-2 bg-cyan-400 hover:bg-cyan-300 disabled:bg-cyan-400/40 disabled:cursor-not-allowed text-black font-bold text-sm tracking-widest uppercase py-3.5 rounded-xl transition shadow-[0_0_30px_rgba(34,211,238,0.3)] hover:shadow-[0_0_40px_rgba(34,211,238,0.5)]"
             >
-              {loading ? "Signing in..." : "Get Started"}
+              {isPending ? "Signing in..." : "Get Started"}
             </button>
           </form>
 

@@ -1,3 +1,5 @@
+import RichTextEditor from "./RichTextEditor";
+
 export default function EditorPanel({
   active,
   onTitleChange,
@@ -47,8 +49,10 @@ export default function EditorPanel({
   }
 
   const content = active.content || "";
-  const charCount = content.length;
-  const wordCount = content.split(/\s+/).filter(Boolean).length;
+  // Strip HTML for word and char count
+  const plainText = content.replace(/<[^>]*>?/gm, "");
+  const charCount = plainText.length;
+  const wordCount = plainText.split(/\s+/).filter(Boolean).length;
 
   return (
     <div
@@ -89,20 +93,9 @@ export default function EditorPanel({
       />
 
       {/* Content */}
-      <textarea
-        value={content}
-        onChange={(e) => onContentChange(e.target.value)}
-        placeholder="Start writing your notes here..."
-        style={{
-          flex: 1,
-          padding: "24px 52px",
-          background: "transparent",
-          border: "none",
-          color: "rgba(215,230,255,0.82)",
-          fontSize: "16px",
-          lineHeight: "1.9",
-          fontFamily: "'DM Sans', sans-serif",
-        }}
+      <RichTextEditor
+        content={content}
+        onChange={onContentChange}
       />
 
       {/* Footer */}

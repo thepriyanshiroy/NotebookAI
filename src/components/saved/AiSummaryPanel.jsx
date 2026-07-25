@@ -75,30 +75,39 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
             {aiText
               .split("\n\n")
               .filter(Boolean)
-              .map((para, i) => (
-                <p
-                  key={i}
-                  style={{
-                    color: "rgba(215,230,255,0.82)",
-                    fontSize: "14px",
-                    lineHeight: "1.8",
-                    marginBottom: "16px",
-                  }}
-                >
-                  {para.split("**").map((chunk, j) =>
-                    j % 2 === 1 ? (
-                      <strong
-                        key={j}
-                        style={{ color: "#fff", fontWeight: 700 }}
-                      >
-                        {chunk}
-                      </strong>
-                    ) : (
-                      chunk
-                    ),
-                  )}
-                </p>
-              ))}
+              .map((para, i) => {
+                const isQuote = para.startsWith("> ");
+                const text = isQuote ? para.slice(2) : para;
+                
+                return (
+                  <p
+                    key={i}
+                    style={{
+                      color: isQuote ? "#f97316" : "rgba(215,230,255,0.82)",
+                      background: isQuote ? "rgba(249,115,22,0.1)" : "transparent",
+                      borderLeft: isQuote ? "3px solid #f97316" : "none",
+                      padding: isQuote ? "12px 16px" : "0",
+                      borderRadius: isQuote ? "0 8px 8px 0" : "0",
+                      fontSize: "14px",
+                      lineHeight: "1.8",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    {text.split("**").map((chunk, j) =>
+                      j % 2 === 1 ? (
+                        <strong
+                          key={j}
+                          style={{ color: isQuote ? "#f97316" : "#fff", fontWeight: 700 }}
+                        >
+                          {chunk}
+                        </strong>
+                      ) : (
+                        chunk
+                      ),
+                    )}
+                  </p>
+                );
+              })}
 
             <button
               onClick={onClose}

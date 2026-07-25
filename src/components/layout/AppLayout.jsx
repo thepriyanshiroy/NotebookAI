@@ -36,8 +36,20 @@ export default function AppLayout({ children, notebookCount }) {
         input:focus { outline: none; }
         input::placeholder { color: rgba(150,200,255,0.2); }
         .sec-item:hover .del-btn { opacity: 1 !important; }
-        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(34,211,238,0.15); border-radius: 2px; }
+        
+        @media (max-width: 768px) {
+          .layout-split { flex-direction: column !important; overflow-y: auto !important; }
+          .sidebar-container { 
+            width: 100% !important; 
+            border-right: none !important; 
+            border-bottom: 1px solid rgba(34,211,238,0.1) !important; 
+            padding: 20px 16px !important; 
+            flex-shrink: 0;
+          }
+          .main-content { overflow-y: visible !important; }
+          .blob-cyan, .blob-pink, .blob-orange { display: none; } /* Hide blobs on mobile to save performance */
+        }
       `}</style>
 
       {/* Dark overlay + blobs */}
@@ -64,9 +76,10 @@ export default function AppLayout({ children, notebookCount }) {
         }}
       >
         <Navbar search={search} setSearch={setSearch} />
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div className="layout-split" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
           <Sidebar notebookCount={notebookCount} />
           <main
+            className="main-content"
             style={{
               flex: 1,
               overflow: "hidden",

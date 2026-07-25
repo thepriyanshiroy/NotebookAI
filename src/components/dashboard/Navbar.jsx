@@ -1,9 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar({ search, setSearch }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDashboard = location.pathname === "/dashboard";
 
   const fullName =
     user?.user_metadata?.full_name || user?.email?.split("@")[0] || "";
@@ -36,6 +38,8 @@ export default function Navbar({ search, setSearch }) {
         .nav-search:focus { outline: none; border-color: rgba(34,211,238,0.45) !important; box-shadow: 0 0 0 3px rgba(34,211,238,0.08) !important; }
         .logout-btn { transition: color 0.15s; }
         .logout-btn:hover { color: #22d3ee !important; }
+        .back-btn { transition: all 0.2s; }
+        .back-btn:hover { background: rgba(34,211,238,0.1) !important; color: #22d3ee !important; }
       `}</style>
 
       <nav
@@ -53,7 +57,7 @@ export default function Navbar({ search, setSearch }) {
             "0 0 0 1px rgba(34,211,238,0.05), 0 12px 60px rgba(0,0,0,0.65), 0 0 120px rgba(34,211,238,0.07)",
         }}
       >
-        {/* Logo */}
+        {/* Logo and Back */}
         <div
           style={{
             width: "260px",
@@ -63,6 +67,31 @@ export default function Navbar({ search, setSearch }) {
             gap: "12px",
           }}
         >
+          {!isDashboard && (
+            <button
+              className="back-btn"
+              onClick={() => navigate(-1)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "36px",
+                height: "36px",
+                borderRadius: "10px",
+                background: "rgba(255,255,255,0.03)",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "rgba(255,255,255,0.6)",
+                cursor: "pointer",
+                marginRight: "4px",
+                flexShrink: 0,
+              }}
+              title="Go Back"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
+          )}
           <div
             style={{
               width: "42px",

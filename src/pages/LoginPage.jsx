@@ -50,7 +50,17 @@ export default function LoginPage() {
 
       {/* Center */}
       <div className="flex-1 flex items-center justify-center px-4">
-        <div className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-10 shadow-2xl">
+        <div className="w-full max-w-md bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-10 shadow-2xl relative">
+          
+          {/* Back Button */}
+          <button 
+            onClick={() => navigate(-1)} 
+            className="absolute -top-12 left-0 text-white/40 hover:text-cyan-400 flex items-center gap-2 text-sm font-medium transition"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            Back
+          </button>
+
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-3 py-1 mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
@@ -91,9 +101,14 @@ export default function LoginPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-white/50 text-xs uppercase tracking-widest">
-                Password
-              </label>
+              <div className="flex justify-between items-center">
+                <label className="text-white/50 text-xs uppercase tracking-widest">
+                  Password
+                </label>
+                <Link to="/forgot-password" className="text-cyan-400 hover:text-cyan-300 text-xs transition">
+                  Forgot?
+                </Link>
+              </div>
               <input
                 type="password"
                 {...register("password")}

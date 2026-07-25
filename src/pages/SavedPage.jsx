@@ -166,18 +166,16 @@ export default function SavedPage() {
         return;
       }
 
-      const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
-      if (!GEMINI_KEY) {
-        setError("Gemini API key missing in .env");
-        return;
-      }
-
       // 🔥 Extract text
       const pdfDoc = await pdfjsLib.getDocument(urlData.signedUrl).promise;
 
       let fullText = "";
       const maxPages = Math.min(pdfDoc.numPages, 10); // reduce load
+      
+      let warningMessage = "";
+      if (pdfDoc.numPages > 10) {
+        warningMessage = `> **Note:** This PDF has ${pdfDoc.numPages} pages. To ensure speed and reliability, only the first 10 pages were analyzed for this summary.\n\n`;
+      }
 
       for (let i = 1; i <= maxPages; i++) {
         const page = await pdfDoc.getPage(i);
@@ -191,13 +189,18 @@ export default function SavedPage() {
         return;
       }
 
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData?.session?.access_token;
+
       // 🔥 Gemini request with retry
       const res = await fetchWithRetry(
-        `/gemini/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_KEY}`,
-        //`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`,
+        `/api/gemini`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": token ? `Bearer ${token}` : ""
+          },
           body: JSON.stringify({
             contents: [
               {
@@ -205,7 +208,7 @@ export default function SavedPage() {
                   {
                     text: `Summarize this PDF for a student in a structured way:
 
-${fullText.slice(0, 15000)}
+${fullText.slice(0, 150000)}
 
 Give:
 1. Overview
@@ -233,6 +236,8 @@ Give:
       }
 
       if (!summary) summary = "Could not generate summary.";
+      
+      summary = warningMessage + summary;
 
       setAiText(summary);
 
@@ -279,8 +284,35 @@ Give:
   return (
     <AppLayout notebookCount={null}>
       {error && (
-        <div style={{ padding: "10px", background: "red", color: "white", textAlign: "center" }}>
-          {error} <button onClick={() => setError(null)}>X</button>
+        <div
+          style={{
+            background: "rgba(239,68,68,0.15)",
+            borderBottom: "1px solid rgba(239,68,68,0.4)",
+            padding: "12px 24px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "16px",
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ color: "#fca5a5", fontSize: "14px", fontWeight: 500 }}>
+            ⚠️ {error}
+          </span>
+          <button
+            onClick={() => setError(null)}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#fca5a5",
+              cursor: "pointer",
+              fontSize: "20px",
+              lineHeight: 1,
+              padding: "0 8px",
+            }}
+          >
+            ×
+          </button>
         </div>
       )}
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -305,7 +337,7 @@ Give:
         )}
 
         {showSplit && (
-          <div style={{ flex: 1, display: "flex" }}>
+          <div className="pdf-split-view" style={{ flex: 1, display: "flex" }}>
             <PdfPreview pdf={previewPdf} splitMode onClose={closeAll} />
             <AiSummaryPanel
               summarizing={summarizing}

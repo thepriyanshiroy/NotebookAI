@@ -15,6 +15,7 @@ export default function NotebookEditor() {
   const [saved, setSaved] = useState(true);
   const [loading, setLoading] = useState(true);
   const saveTimerRef = useRef(null);
+  const pendingSaveRef = useRef(null);
   const [error, setError] = useState(null);
 
   const active = sections.find((s) => s.id === activeId) ?? null;
@@ -54,20 +55,40 @@ export default function NotebookEditor() {
     load();
   }, [id]);
 
+  const commitSave = async () => {
+    if (!pendingSaveRef.current) return;
+    const { sectionId, title, content } = pendingSaveRef.current;
+    pendingSaveRef.current = null; // Clear to prevent double saving
+    
+    try {
+      const { error } = await supabase
+        .from("sections")
+        .update({ title, content, updated_at: new Date().toISOString() })
+        .eq("id", sectionId);
+      if (error) throw error;
+      setSaved(true);
+    } catch (err) {
+      console.error("Autosave error:", err);
+    }
+  };
+
+  // Force save if user navigates away
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      if (pendingSaveRef.current) {
+        commitSave();
+      }
+    };
+  }, []);
+
   const triggerAutosave = useCallback((sectionId, title, content) => {
     setSaved(false);
+    pendingSaveRef.current = { sectionId, title, content };
+    
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    saveTimerRef.current = setTimeout(async () => {
-      try {
-        const { error } = await supabase
-          .from("sections")
-          .update({ title, content, updated_at: new Date().toISOString() })
-          .eq("id", sectionId);
-        if (error) throw error;
-        setSaved(true);
-      } catch (err) {
-        console.error("Autosave error:", err);
-      }
+    saveTimerRef.current = setTimeout(() => {
+      commitSave();
     }, 1500);
   }, []);
 
@@ -333,7 +354,7 @@ export default function NotebookEditor() {
       </div>
 
       {/* Sections + Editor */}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <div className="layout-split" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         <SectionsPanel
           notebook={notebook}
           sections={sections}

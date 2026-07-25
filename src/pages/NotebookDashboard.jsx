@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { getNotebooks, createNotebook, deleteNotebook } from "../lib/database";
+import { supabase } from "../lib/supabase";
 import Navbar from "../components/dashboard/Navbar";
 import Sidebar from "../components/dashboard/Sidebar";
 import NotebookCard from "../components/dashboard/NotebookCard";
@@ -16,9 +17,33 @@ export default function NotebookDashboard() {
   const greeting =
     hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
 
+  const [pdfStats, setPdfStats] = useState({ total: 0, summarized: 0 });
+
   useEffect(() => {
     fetchNotebooks();
+    fetchPdfStats();
   }, []);
+
+  const fetchPdfStats = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from('saved_pdfs')
+        .select('summary')
+        .eq('user_id', user.id);
+        
+      if (!error && data) {
+        setPdfStats({
+          total: data.length,
+          summarized: data.filter(d => d.summary).length
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const fetchNotebooks = async () => {
     try {
@@ -60,22 +85,22 @@ export default function NotebookDashboard() {
       glow: "rgba(34,211,238,0.4)",
     },
     {
-      label: "Total Sections",
+      label: "Total\nSections",
       value: String(totalSections),
       color: "#e879a0",
       glow: "rgba(232,121,160,0.4)",
     },
     {
-      label: "AI Summaries",
-      value: "0",
-      color: "#f97316",
-      glow: "rgba(249,115,22,0.4)",
-    },
-    {
-      label: "Coverage",
-      value: "0%",
+      label: "Saved\nPDFs",
+      value: String(pdfStats.total),
       color: "#2dd4bf",
       glow: "rgba(45,212,191,0.4)",
+    },
+    {
+      label: "AI\nSummaries",
+      value: String(pdfStats.summarized),
+      color: "#f97316",
+      glow: "rgba(249,115,22,0.4)",
     },
   ];
 
@@ -118,6 +143,21 @@ export default function NotebookDashboard() {
 
         ::-webkit-scrollbar { width:5px }
         ::-webkit-scrollbar-thumb { background:rgba(34,211,238,0.18); border-radius:3px }
+
+        @media (max-width: 768px) {
+          .layout-split { flex-direction: column !important; overflow-y: auto !important; }
+          .main-content { padding: 24px 20px !important; overflow-y: visible !important; }
+          .header-section { flex-direction: column !important; alignItems: flex-start !important; gap: 20px !important; margin-bottom: 24px !important; }
+          .header-section h1 { font-size: 36px !important; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; margin-bottom: 24px !important; }
+          .stat-card { padding: 20px 16px !important; }
+          .stat-card p:first-child { font-size: 32px !important; }
+          .notebooks-grid { grid-template-columns: 1fr !important; }
+          .blob-cyan, .blob-pink, .blob-orange { display: none; }
+        }
+        @media (max-width: 480px) {
+          .stats-grid { grid-template-columns: 1fr !important; }
+        }
       `}</style>
 
       <div
@@ -143,13 +183,13 @@ export default function NotebookDashboard() {
       >
         <Navbar search={search} setSearch={setSearch} />
 
-        <div style={{ display: "flex", flex: 1 }}>
+        <div className="layout-split" style={{ display: "flex", flex: 1 }}>
           <Sidebar notebookCount={notebooks.length} />
 
-          <main style={{ flex: 1, overflowY: "auto", padding: "44px 56px" }}>
+          <main className="main-content" style={{ flex: 1, overflowY: "auto", padding: "44px 56px" }}>
             {/* Header */}
             <div
-              className="f1"
+              className="f1 header-section"
               style={{
                 display: "flex",
                 alignItems: "flex-end",
@@ -232,7 +272,7 @@ export default function NotebookDashboard() {
 
             {/* Stats */}
             <div
-              className="f2"
+              className="f2 stats-grid"
               style={{
                 display: "grid",
                 gridTemplateColumns: "repeat(4,1fr)",
@@ -319,7 +359,7 @@ export default function NotebookDashboard() {
             {/* Grid */}
             {!loading && notebooks.length > 0 && (
               <div
-                className="f3"
+                className="f3 notebooks-grid"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(2,1fr)",

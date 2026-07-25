@@ -6,11 +6,8 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div
-        className="min-h-screen bg-cover bg-center flex items-center justify-center"
-        style={{ backgroundImage: "url('/src/assets/background.jpg')" }}
-      >
-        <div className="w-9 h-9 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin" />
+      <div className="min-h-screen bg-[#040510] flex items-center justify-center">
+        <div className="w-8 h-8 border-[3px] border-cyan-900 border-t-cyan-400 rounded-full animate-spin" />
       </div>
     );
   }

@@ -127,15 +127,34 @@ const SaveIcon = (active) => (
   </svg>
 );
 
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
+
 export default function Sidebar({ notebookCount }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const [dbCount, setDbCount] = useState(0);
 
   const isNotebooks =
     location.pathname === "/dashboard" ||
     location.pathname.startsWith("/notebook");
   const isSaved = location.pathname === "/saved";
+
+  useEffect(() => {
+    if (notebookCount !== undefined && notebookCount !== null) return;
+    const fetchCount = async () => {
+      if (!user) return;
+      const { count } = await supabase
+        .from("notebooks")
+        .select("*", { count: "exact", head: true })
+        .eq("user_id", user.id);
+      setDbCount(count || 0);
+    };
+    fetchCount();
+  }, [notebookCount, user]);
+
+  const displayCount = notebookCount ?? dbCount;
 
   const fullName =
     user?.user_metadata?.full_name || user?.email?.split("@")[0] || "";
@@ -148,18 +167,17 @@ export default function Sidebar({ notebookCount }) {
 
   return (
     <aside
+      className="sidebar-container"
       style={{
         width: "290px",
-        flexShrink: 0,
+        background: "rgba(5,7,18,0.7)",
+        backdropFilter: "blur(40px)",
+        WebkitBackdropFilter: "blur(40px)",
+        borderRight: "1px solid rgba(255,255,255,0.07)",
+        padding: "32px 24px",
         display: "flex",
         flexDirection: "column",
-        padding: "28px 16px",
-        background: "rgba(5,7,20,0.88)",
-        backdropFilter: "blur(48px)",
-        WebkitBackdropFilter: "blur(48px)",
-        borderRight: "1px solid rgba(34,211,238,0.1)",
-        boxShadow:
-          "6px 0 56px rgba(0,0,0,0.5), inset -1px 0 0 rgba(34,211,238,0.05)",
+        flexShrink: 0,
         position: "relative",
         zIndex: 10,
       }}
@@ -182,7 +200,7 @@ export default function Sidebar({ notebookCount }) {
         label="Notebooks"
         active={isNotebooks}
         onClick={() => navigate("/dashboard")}
-        count={notebookCount}
+        count={displayCount}
         icon={BookIcon}
       />
       <NavBtn

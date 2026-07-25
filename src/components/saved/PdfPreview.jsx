@@ -1,6 +1,7 @@
 export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
   return (
     <div
+      className="pdf-preview-pane"
       style={{
         flex: 1,
         display: "flex",

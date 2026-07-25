@@ -21,6 +21,7 @@ export default function SectionsPanel({
 
   return (
     <div
+      className="sections-panel"
       style={{
         width: "280px",
         flexShrink: 0,

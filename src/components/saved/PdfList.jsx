@@ -20,6 +20,7 @@ export default function PdfList({
     >
       {/* Header */}
       <div
+        className="pdf-list-header"
         style={{
           display: "flex",
           alignItems: "flex-start",
@@ -121,7 +122,7 @@ export default function PdfList({
       </div>
 
       {/* List */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "0 44px 32px" }}>
+      <div className="pdf-list-content" style={{ flex: 1, overflowY: "auto", padding: "0 44px 32px" }}>
         {/* Loading spinner */}
         {loading && (
           <div

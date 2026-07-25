@@ -211,7 +211,7 @@ export default function Sidebar({ notebookCount }) {
       />
 
       {/* User card */}
-      <div style={{ marginTop: "auto" }}>
+      <div className="user-card" style={{ marginTop: "auto" }}>
         <div
           style={{
             height: "1px",

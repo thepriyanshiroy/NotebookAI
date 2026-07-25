@@ -43,6 +43,7 @@ export default function Navbar({ search, setSearch }) {
       `}</style>
 
       <nav
+        className="navbar"
         style={{
           display: "flex",
           alignItems: "center",
@@ -59,6 +60,7 @@ export default function Navbar({ search, setSearch }) {
       >
         {/* Logo and Back */}
         <div
+          className="nav-left"
           style={{
             width: "260px",
             flexShrink: 0,
@@ -111,6 +113,7 @@ export default function Navbar({ search, setSearch }) {
             N
           </div>
           <span
+            className="nav-logo-text"
             style={{
               fontFamily: "'Syne',sans-serif",
               fontWeight: 800,
@@ -124,8 +127,8 @@ export default function Navbar({ search, setSearch }) {
         </div>
 
         {/* Search */}
-        <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <div style={{ position: "relative", width: "520px" }}>
+        <div className="nav-center" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+          <div className="nav-search-wrapper" style={{ position: "relative", width: "520px" }}>
             <svg
               style={{
                 position: "absolute",
@@ -178,6 +181,7 @@ export default function Navbar({ search, setSearch }) {
 
         {/* Right */}
         <div
+          className="nav-right"
           style={{
             width: "260px",
             flexShrink: 0,

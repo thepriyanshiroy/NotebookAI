@@ -130,7 +130,7 @@ const SaveIcon = (active) => (
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
-export default function Sidebar({ notebookCount }) {
+export default function Sidebar({ notebookCount, className, onItemClick }) {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -165,9 +165,14 @@ export default function Sidebar({ notebookCount }) {
     .toUpperCase()
     .slice(0, 2);
 
+  const handleNav = (path) => {
+    navigate(path);
+    if (onItemClick) onItemClick();
+  };
+
   return (
     <aside
-      className="sidebar-container"
+      className={className || "sidebar-container"}
       style={{
         width: "290px",
         background: "rgba(5,7,18,0.7)",
@@ -199,14 +204,14 @@ export default function Sidebar({ notebookCount }) {
       <NavBtn
         label="Notebooks"
         active={isNotebooks}
-        onClick={() => navigate("/dashboard")}
+        onClick={() => handleNav("/dashboard")}
         count={displayCount}
         icon={BookIcon}
       />
       <NavBtn
         label="Saved"
         active={isSaved}
-        onClick={() => navigate("/saved")}
+        onClick={() => handleNav("/saved")}
         icon={SaveIcon}
       />
 

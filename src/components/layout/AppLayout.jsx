@@ -3,8 +3,12 @@ import Navbar from "../dashboard/Navbar";
 import Sidebar from "../dashboard/Sidebar";
 import bg from "../../assets/background.jpg";
 
-export default function AppLayout({ children, notebookCount }) {
-  const [search, setSearch] = useState("");
+export default function AppLayout({ children, notebookCount, search, setSearch }) {
+  const [localSearch, setLocalSearch] = useState("");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const searchValue = search !== undefined ? search : localSearch;
+  const setSearchValue = setSearch !== undefined ? setSearch : setLocalSearch;
 
   return (
     <div
@@ -39,16 +43,38 @@ export default function AppLayout({ children, notebookCount }) {
         ::-webkit-scrollbar-thumb { background: rgba(34,211,238,0.15); border-radius: 2px; }
         
         @media (max-width: 768px) {
-          .layout-split { flex-direction: column !important; overflow-y: auto !important; }
+          .layout-split { flex-direction: column !important; }
           .sidebar-container { 
-            width: 100% !important; 
-            border-right: none !important; 
-            border-bottom: 1px solid rgba(34,211,238,0.1) !important; 
-            padding: 20px 16px !important; 
-            flex-shrink: 0;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            height: 100vh !important;
+            width: 280px !important;
+            flex-direction: column !important;
+            padding: 32px 24px !important;
+            z-index: 50 !important;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            background: rgba(5,7,18,0.95) !important;
+            backdrop-filter: blur(40px) !important;
+            border-right: 1px solid rgba(255,255,255,0.07) !important;
+            border-bottom: none !important;
           }
-          .main-content { overflow-y: visible !important; }
-          .blob-cyan, .blob-pink, .blob-orange { display: none; } /* Hide blobs on mobile to save performance */
+          .sidebar-container.open {
+            transform: translateX(0);
+          }
+          .sidebar-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 40;
+            display: none;
+          }
+          .sidebar-overlay.open {
+            display: block;
+          }
+          .sidebar-container button { width: 100% !important; margin-bottom: 6px !important; padding: 14px 18px !important; }
+          .blob-cyan, .blob-pink, .blob-orange { display: none; }
         }
       `}</style>
 
@@ -75,9 +101,24 @@ export default function AppLayout({ children, notebookCount }) {
           height: "100vh",
         }}
       >
-        <Navbar search={search} setSearch={setSearch} />
+        <Navbar 
+          search={searchValue} 
+          setSearch={setSearchValue} 
+          onMenuClick={() => setMobileMenuOpen(true)}
+        />
         <div className="layout-split" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-          <Sidebar notebookCount={notebookCount} />
+          
+          <div 
+            className={`sidebar-overlay ${mobileMenuOpen ? 'open' : ''}`} 
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          
+          <Sidebar 
+            notebookCount={notebookCount} 
+            className={`sidebar-container ${mobileMenuOpen ? 'open' : ''}`}
+            onItemClick={() => setMobileMenuOpen(false)}
+          />
+          
           <main
             className="main-content"
             style={{

@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
-export default function Navbar({ search, setSearch }) {
+export default function Navbar({ search, setSearch, onMenuClick }) {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +69,29 @@ export default function Navbar({ search, setSearch }) {
             gap: "12px",
           }}
         >
+          <button
+            className="mobile-menu-btn"
+            onClick={onMenuClick}
+            style={{
+              display: "none",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.9)",
+              cursor: "pointer",
+              marginRight: "4px",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+
           {!isDashboard && (
             <button
               className="back-btn"

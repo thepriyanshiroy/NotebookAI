@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import bg from "../assets/background.jpg";
 
 const signupSchema = z.object({
   fullName: z.string().min(1, { message: "Full Name is required" }),
@@ -40,7 +41,7 @@ export default function SignupPage() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
-      style={{ backgroundImage: "url('/src/assets/background.jpg')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       {/* Nav */}
       <nav className="px-8 py-5">

@@ -1,18 +1,19 @@
 import { useState, useTransition } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import bg from "../assets/background.jpg";
 
 const resetSchema = z.object({
   password: z.string().min(12, { message: "Password must be at least 12 characters" }),
 });
 
 export default function ResetPasswordPage() {
-  const { updatePassword } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -25,12 +26,14 @@ export default function ResetPasswordPage() {
 
   const onSubmit = (data) => {
     setError("");
+    setSuccess(false);
     startTransition(async () => {
-      try {
-        await updatePassword(data.password);
-        navigate("/dashboard");
-      } catch (err) {
-        setError(err.message);
+      const { error } = await supabase.auth.updateUser({ password: data.password });
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuccess(true);
+        setTimeout(() => navigate("/dashboard"), 2000);
       }
     });
   };
@@ -38,7 +41,7 @@ export default function ResetPasswordPage() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
-      style={{ backgroundImage: "url('/src/assets/background.jpg')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <nav className="px-8 py-5">
         <span className="text-white font-bold text-xl tracking-tight">

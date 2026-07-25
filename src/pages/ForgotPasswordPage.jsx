@@ -1,16 +1,17 @@
 import { useState, useTransition } from "react";
-import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import bg from "../assets/background.jpg";
 
 const forgotSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
 });
 
 export default function ForgotPasswordPage() {
-  const { resetPasswordForEmail } = useAuth();
+  const navigate = useNavigate();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -27,11 +28,13 @@ export default function ForgotPasswordPage() {
     setError("");
     setSuccess(false);
     startTransition(async () => {
-      try {
-        await resetPasswordForEmail(data.email, window.location.origin + "/reset-password");
+      const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      if (error) {
+        setError(error.message);
+      } else {
         setSuccess(true);
-      } catch (err) {
-        setError(err.message);
       }
     });
   };
@@ -39,7 +42,7 @@ export default function ForgotPasswordPage() {
   return (
     <div
       className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
-      style={{ backgroundImage: "url('/src/assets/background.jpg')" }}
+      style={{ backgroundImage: `url(${bg})` }}
     >
       <nav className="px-8 py-5">
         <span className="text-white font-bold text-xl tracking-tight">

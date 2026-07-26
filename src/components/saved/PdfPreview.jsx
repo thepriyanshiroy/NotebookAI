@@ -78,6 +78,7 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
                 fontWeight: 700,
                 cursor: "pointer",
                 fontFamily: "inherit",
+                whiteSpace: "nowrap",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.background = "rgba(249,115,22,0.2)")
@@ -99,6 +100,40 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
             </button>
           )}
 
+          {/* Download button */}
+          <a
+            href={pdf.url}
+            download={pdf.name}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="Download PDF"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "34px",
+              height: "34px",
+              borderRadius: "10px",
+              background: "rgba(34,211,238,0.1)",
+              border: "1px solid rgba(34,211,238,0.3)",
+              color: "#22d3ee",
+              cursor: "pointer",
+              textDecoration: "none",
+              flexShrink: 0,
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background = "rgba(34,211,238,0.18)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background = "rgba(34,211,238,0.1)")
+            }
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <polyline points="7 10 12 15 17 10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </a>
         </div>
       </div>
 

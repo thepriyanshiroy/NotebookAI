@@ -85,6 +85,7 @@ export default function PdfRow({ pdf, onPreview, onSummarize, onDelete }) {
               border: "1px solid rgba(34,211,238,0.3)",
               cursor: "pointer",
               fontFamily: "inherit",
+              whiteSpace: "nowrap",
             }}
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
@@ -112,6 +113,7 @@ export default function PdfRow({ pdf, onPreview, onSummarize, onDelete }) {
               cursor: "pointer",
               fontFamily: "inherit",
               transition: "all 0.15s",
+              whiteSpace: "nowrap",
             }}
           >
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
@@ -138,6 +140,7 @@ export default function PdfRow({ pdf, onPreview, onSummarize, onDelete }) {
             cursor: "pointer",
             fontFamily: "inherit",
             transition: "all 0.15s",
+            whiteSpace: "nowrap",
           }}
         >
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none">

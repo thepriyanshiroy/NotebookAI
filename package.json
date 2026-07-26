@@ -19,7 +19,7 @@
     "@tiptap/extension-underline": "^3.29.0",
     "@tiptap/react": "^3.29.0",
     "@tiptap/starter-kit": "^3.29.0",
-    "pdfjs-dist": "^5.5.207",
+    "pdfjs-dist": "3.11.174",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.71.2",

@@ -1,4 +1,4 @@
-export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
+export default function AiSummaryPanel({ summarizing, aiText, error, onClose }) {
   return (
     <div
       className="ai-summary-pane"
@@ -66,8 +66,39 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
           WebkitOverflowScrolling: "touch",
         }}
       >
+        {/* Error message */}
+        {error && (
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: "12px", padding: "20px", textAlign: "center" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "rgba(239,68,68,0.15)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <p style={{ color: "#fca5a5", fontSize: "14px", fontWeight: 500, margin: 0, lineHeight: 1.5 }}>
+              {error}
+            </p>
+            <button
+              onClick={onClose}
+              style={{
+                marginTop: "16px",
+                background: "rgba(239,68,68,0.1)",
+                color: "#fca5a5",
+                border: "1px solid rgba(239,68,68,0.2)",
+                padding: "8px 20px",
+                borderRadius: "8px",
+                fontSize: "13px",
+                fontWeight: 600,
+                cursor: "pointer",
+                fontFamily: "inherit",
+              }}
+            >
+              Close
+            </button>
+          </div>
+        )}
+
         {/* Loading shimmer */}
-        {summarizing && (
+        {summarizing && !error && (
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >

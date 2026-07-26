@@ -6,7 +6,7 @@ import PdfList from "../components/saved/PdfList";
 import PdfPreview from "../components/saved/PdfPreview";
 import AiSummaryPanel from "../components/saved/AiSummaryPanel";
 import * as pdfjsLib from "pdfjs-dist";
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
 
@@ -47,6 +47,7 @@ export default function SavedPage() {
   const [summarizing, setSummarizing] = useState(false);
   const [aiText, setAiText] = useState("");
   const [error, setError] = useState(null);
+  const [summaryError, setSummaryError] = useState(null);
   const [search, setSearch] = useState(location.state?.search || "");
 
   const showSplit = previewPdf && summaryPdf && previewPdf.id === summaryPdf.id;
@@ -155,6 +156,7 @@ export default function SavedPage() {
 
     try {
       setError(null);
+      setSummaryError(null);
       setSummarizing(true);
       setAiText("");
 
@@ -256,9 +258,9 @@ Give:
       console.error("[Gemini] Error:", err);
 
       if (err.message.includes("503")) {
-        setError("Server is busy. Try again in a few seconds.");
+        setSummaryError("Server is busy. Try again in a few seconds.");
       } else {
-        setError("Summary failed: " + err.message);
+        setSummaryError("Oops! We couldn't generate the summary right now. Please try again later.");
       }
     } finally {
       setSummarizing(false);
@@ -285,6 +287,7 @@ Give:
     setPreviewPdf(null);
     setSummaryPdf(null);
     setAiText("");
+    setSummaryError(null);
   };
 
   useEffect(() => {
@@ -375,6 +378,7 @@ Give:
             <AiSummaryPanel
               summarizing={summarizing}
               aiText={aiText}
+              error={summaryError}
               onClose={closeAll}
             />
           </div>

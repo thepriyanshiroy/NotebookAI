@@ -65,7 +65,7 @@ export default function EditorPanel({
       }}
     >
       {/* Section title */}
-      <div style={{ padding: "36px 52px 20px" }}>
+      <div className="editor-title-row" style={{ padding: "36px 52px 20px" }}>
         <input
           value={active.title}
           onChange={(e) => onTitleChange(e.target.value)}

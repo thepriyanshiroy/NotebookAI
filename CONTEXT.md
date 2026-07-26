@@ -43,11 +43,10 @@ Routes are defined in `src/App.jsx`.
 - `/signup` -> `SignupPage`
 - `/forgot-password` -> `ForgotPasswordPage`
 - `/reset-password` -> `ResetPasswordPage`
-- `/dashboard` -> protected `DashboardPage` overview
-- `/notebooks` -> protected `NotebookDashboard` notebook library
+- `/dashboard` -> protected `NotebookDashboard` desktop-original dashboard; mobile hides notebook list and shows only overview cards
+- `/notebooks` -> protected `NotebookDashboard` notebook library route; mobile shows the notebook card list
 - `/notebook/:id` -> protected `NotebookEditor`
 - `/saved` -> protected `SavedPage`
-- `/summaries` -> protected `SummariesPage`
 - catch-all redirects to `/login`
 
 Auth guarding is handled by `src/components/layout/ProtectedRoute.jsx`.
@@ -83,30 +82,26 @@ Authenticated pages use `src/components/layout/AppLayout.jsx`.
 - Top nav: `src/components/dashboard/Navbar.jsx`
 - Sidebar: `src/components/dashboard/Sidebar.jsx`
 - Visual language: dark glassmorphism, cyan primary accents, pink/orange/teal secondary accents, Syne headings, DM Sans body
-- Responsive shell is now CSS-first in `src/index.css`: desktop/laptop sidebar, compact topbar, mobile bottom navigation, independent `app-main` page scroll regions.
-- Key breakpoints: desktop at 1280+, compact rail at 1024-1279, tablet below 1024, mobile bottom nav below 768, extra narrow tuning below 430.
+- Desktop shell intentionally matches the original pre-redesign layout: glass top nav, left sidebar, large dashboard header, stats row, and notebook grid.
+- Current responsive direction: leave desktop at 1024px+ stable unless fixing a genuine bug; focus UI/UX refinements on mobile and tablet only.
+- Mobile top nav must always show the full logo mark and "NotebookAI" text.
+- Tablet has a dedicated CSS layer from `768px` to `1194px`, plus coarse-pointer tuning through `1366px`: smaller tablets use a compact visible sidebar, larger tablets use a touch-friendly expanded sidebar, dashboard spacing/cards are adjusted, and the notebook editor keeps the section sidebar visible.
+- The NotebookAI brand in the header navigates to `/dashboard`.
+- On mobile, tapping the profile/avatar opens a right-side profile drawer with user info and logout.
+- Navbar back button is contextual, not browser-history based: `/notebooks` and `/saved` go to `/dashboard`; notebook routes go to `/notebooks`.
+- Dashboard search is a global workspace search across notebook titles/subjects, section titles, saved PDF names, and cached AI summary text. Results navigate to notebooks or into Saved PDFs with route state for preview/summary opening.
 
 Note: Several existing files contain mojibake where emoji/symbols were saved or rendered incorrectly. Prefer ASCII in new docs unless intentionally fixing those files.
 
 ## Notebook Dashboard
 
-Main file: `src/pages/DashboardPage.jsx`
-
-Responsibilities:
-
-- Loads notebooks with `getNotebooks()` and recent PDFs from `saved_pdfs`
-- Shows compact statistics, recent notebooks, recent PDFs, and quick actions
-- Does not render the full notebook list; full library lives at `/notebooks`
-
-## Notebook Library
-
 Main file: `src/pages/NotebookDashboard.jsx`
 
 Responsibilities:
 
-- Dedicated notebook screen for search, create, delete, and opening notebooks
-- Uses `NewNotebookModal` for creation
-- Uses compact responsive cards through `NotebookCard`
+- Desktop `/dashboard` preserves the original full notebook dashboard.
+- Mobile `/dashboard` hides the heading, notebook list, and empty state so only four overview cards remain below branding/search/profile.
+- Mobile `/notebooks` hides overview stats and shows the notebook cards only.
 
 Reusable components:
 
@@ -172,14 +167,6 @@ Summary UI:
 - `PdfPreview.jsx`: preview pane, AI summary button, close controls
 - `AiSummaryPanel.jsx`: loading shimmer, lightweight markdown-ish display for `**bold**` and quote-style notes
 
-## AI Summaries
-
-Main file: `src/pages/SummariesPage.jsx`
-
-- Dedicated summary review screen backed by `saved_pdfs.summary`
-- Supports searching PDF names and summary text
-- Displays generated summary previews without requiring users to reopen each PDF
-
 ## Serverless Gemini Proxy
 
 File: `api/gemini.js`
@@ -214,7 +201,10 @@ Some pages use these helpers, while `NotebookEditor.jsx` and `SavedPage.jsx` als
 ## Known Rough Edges / Watch Points
 
 - `CONTEXT.md` existed in git and was deleted before this file was created. This new lowercase `context.md` is the current project memory requested by the user.
-- `src/components/editor/EditorTopbar.jsx`, `src/App.css`, and `src/assets/logo.png` appear unused by current routing/imports.
+- `src/pages/DashboardPage.jsx`, `src/components/editor/EditorTopbar.jsx`, `src/App.css`, and `src/assets/logo.png` appear unused by current routing/imports.
+- The mobile editor uses a hamburger button to open `SectionsPanel` as a drawer; selecting a section closes the drawer.
+- `NotebookEditor` passes `hideNavbar` to `AppLayout`, so the global search/header is removed inside the notebook editor and the editing area starts at the editor save bar.
+- On mobile, non-split PDF preview uses `PdfPreview` class `fullscreen-mode` and CSS makes it a full-screen viewer.
 - README and several JSX comments/text literals show mojibake for emoji/symbols.
 - `src/lib/database.js` uses decorative non-ASCII comment separators that also render as mojibake.
 - `NotebookEditor` has an async `commitSave` called during effect cleanup; React will not wait for it during unload/navigation.

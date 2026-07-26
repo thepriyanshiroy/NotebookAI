@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import AppLayout from "../components/layout/AppLayout";
 import PdfList from "../components/saved/PdfList";
@@ -36,6 +37,8 @@ const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
 };
 
 export default function SavedPage() {
+  const location = useLocation();
+  const routedResultHandledRef = useRef(false);
   const [pdfs, setPdfs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -44,7 +47,7 @@ export default function SavedPage() {
   const [summarizing, setSummarizing] = useState(false);
   const [aiText, setAiText] = useState("");
   const [error, setError] = useState(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(location.state?.search || "");
 
   const showSplit = previewPdf && summaryPdf && previewPdf.id === summaryPdf.id;
   const filteredPdfs = pdfs.filter((pdf) =>
@@ -129,7 +132,7 @@ export default function SavedPage() {
     input.click();
   };
 
-  const handlePreview = async (pdf) => {
+  const handlePreview = useCallback(async (pdf) => {
     try {
       setError(null);
 
@@ -145,9 +148,9 @@ export default function SavedPage() {
     } catch (err) {
       setError("Preview failed: " + err.message);
     }
-  };
+  }, []);
 
-  const handleSummarize = async (pdf) => {
+  const handleSummarize = useCallback(async (pdf) => {
     if (summarizing) return; // 🔒 prevent multiple calls
 
     try {
@@ -261,7 +264,7 @@ Give:
     } finally {
       setSummarizing(false);
     }
-  };
+  }, [summarizing]);
 
   const handleDelete = async (pdf) => {
     try {
@@ -284,6 +287,24 @@ Give:
     setSummaryPdf(null);
     setAiText("");
   };
+
+  useEffect(() => {
+    if (routedResultHandledRef.current || loading || pdfs.length === 0) return;
+
+    const previewPdfId = location.state?.previewPdfId;
+    const summaryPdfId = location.state?.summaryPdfId;
+    if (!previewPdfId && !summaryPdfId) return;
+
+    const target = pdfs.find((pdf) => pdf.id === (previewPdfId || summaryPdfId));
+    if (!target) return;
+
+    routedResultHandledRef.current = true;
+    if (summaryPdfId) {
+      handleSummarize(target);
+    } else {
+      handlePreview(target);
+    }
+  }, [loading, pdfs, location.state, handlePreview, handleSummarize]);
 
   return (
     <AppLayout

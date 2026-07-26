@@ -14,6 +14,7 @@ export default function NotebookEditor() {
   const [activeId, setActiveId] = useState(null);
   const [saved, setSaved] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [sectionDrawerOpen, setSectionDrawerOpen] = useState(false);
   const saveTimerRef = useRef(null);
   const pendingSaveRef = useRef(null);
   const [error, setError] = useState(null);
@@ -203,7 +204,7 @@ export default function NotebookEditor() {
   };
 
   return (
-    <AppLayout notebookCount={null}>
+    <AppLayout notebookCount={null} hideNavbar>
       {error && (
         <div
           style={{
@@ -250,7 +251,30 @@ export default function NotebookEditor() {
           borderBottom: "1px solid rgba(255,255,255,0.07)",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
+          <button
+            className="editor-mobile-menu"
+            onClick={() => setSectionDrawerOpen(true)}
+            type="button"
+            aria-label="Open sections"
+            style={{
+              display: "none",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#22d3ee",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
           <button
             onClick={() => navigate("/notebooks")}
             style={{
@@ -355,14 +379,25 @@ export default function NotebookEditor() {
 
       {/* Sections + Editor */}
       <div className="layout-split" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        <div
+          className={`editor-section-overlay ${sectionDrawerOpen ? "open" : ""}`}
+          onClick={() => setSectionDrawerOpen(false)}
+        />
         <SectionsPanel
+          className={sectionDrawerOpen ? "open" : ""}
           notebook={notebook}
           sections={sections}
           setSections={setSections}
           activeId={activeId}
-          setActiveId={setActiveId}
+          setActiveId={(nextId) => {
+            setActiveId(nextId);
+            setSectionDrawerOpen(false);
+          }}
           loading={loading}
-          onAdd={handleAddSection}
+          onAdd={async () => {
+            await handleAddSection();
+            setSectionDrawerOpen(false);
+          }}
           onDelete={handleDeleteSection}
           onRename={handleRename}
           onClose={() => navigate("/notebooks")}

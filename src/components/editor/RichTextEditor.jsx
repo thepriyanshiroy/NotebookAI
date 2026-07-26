@@ -23,6 +23,7 @@ const MenuBar = ({ editor }) => {
 
   return (
     <div
+      className="editor-toolbar"
       style={{
         display: "flex",
         gap: "4px",

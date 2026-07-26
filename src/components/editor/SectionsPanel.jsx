@@ -11,6 +11,7 @@ export default function SectionsPanel({
   onDelete,
   onRename,
   onClose,
+  className = "",
 }) {
   const [editingId, setEditingId] = useState(null);
 
@@ -21,7 +22,7 @@ export default function SectionsPanel({
 
   return (
     <div
-      className="sections-panel"
+      className={`sections-panel ${className}`}
       style={{
         width: "280px",
         flexShrink: 0,

@@ -72,7 +72,7 @@ export default function LandingPage() {
           className="font-extrabold leading-none tracking-tight"
           style={{
             fontFamily: "'Syne', sans-serif",
-            fontSize: "clamp(52px, 8vw, 100px)",
+            fontSize: "clamp(40px, 10vw, 100px)",
           }}
         >
           <span className="text-white">Notebook</span>
@@ -81,10 +81,10 @@ export default function LandingPage() {
 
         {/* Tagline */}
         <h2
-          className="font-light leading-tight tracking-tight text-white/85 mt-2"
+          className="font-light leading-tight tracking-tight text-white/85 mt-2 md:mt-4"
           style={{
             fontFamily: "'Syne', sans-serif",
-            fontSize: "clamp(26px, 5vw, 66px)",
+            fontSize: "clamp(20px, 6vw, 66px)",
           }}
         >
           Understand Your Notes Faster

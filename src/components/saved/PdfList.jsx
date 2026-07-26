@@ -15,11 +15,13 @@ export default function PdfList({
 
   return (
     <div
+      className="pdf-list-container"
       style={{
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden",
+        overflowY: "auto",
+        WebkitOverflowScrolling: "touch",
       }}
     >
       <div
@@ -123,7 +125,7 @@ export default function PdfList({
         </button>
       </div>
 
-      <div className="pdf-list-content" style={{ flex: 1, overflowY: "auto", padding: "0 44px 32px" }}>
+      <div className="pdf-list-content" style={{ padding: "0 44px 32px" }}>
         {loading && (
           <div style={{ display: "flex", justifyContent: "center", marginTop: "60px" }}>
             <div

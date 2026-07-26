@@ -252,7 +252,7 @@ export default function NotebookEditor() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/notebooks")}
             style={{
               color: "#22d3ee",
               background: "none",
@@ -365,7 +365,7 @@ export default function NotebookEditor() {
           onAdd={handleAddSection}
           onDelete={handleDeleteSection}
           onRename={handleRename}
-          onClose={() => navigate("/dashboard")}
+          onClose={() => navigate("/notebooks")}
         />
         <EditorPanel
           active={active}

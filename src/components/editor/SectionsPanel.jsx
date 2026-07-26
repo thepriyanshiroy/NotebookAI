@@ -85,6 +85,8 @@ export default function SectionsPanel({
 
         <button
           onClick={onClose}
+          type="button"
+          aria-label="Close notebook editor"
           style={{
             background: "none",
             border: "none",
@@ -152,6 +154,15 @@ export default function SectionsPanel({
                 key={s.id}
                 className="sec-item"
                 onClick={() => setActiveId(s.id)}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isActive}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setActiveId(s.id);
+                  }
+                }}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -249,6 +260,8 @@ export default function SectionsPanel({
                 <button
                   className="del-btn"
                   onClick={(e) => onDelete(s.id, e)}
+                  type="button"
+                  aria-label={`Delete ${s.title}`}
                   style={{
                     background: "none",
                     border: "none",
@@ -289,6 +302,7 @@ export default function SectionsPanel({
       >
         <button
           onClick={onAdd}
+          type="button"
           style={{
             width: "100%",
             display: "flex",

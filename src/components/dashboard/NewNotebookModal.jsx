@@ -1,52 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const COLORS = [
-  { primary: "#22d3ee", secondary: "#06b6d4", glow: "rgba(34,211,238,0.35)" },
-  { primary: "#e879a0", secondary: "#db2777", glow: "rgba(232,121,160,0.35)" },
-  { primary: "#f97316", secondary: "#ea580c", glow: "rgba(249,115,22,0.35)" },
-  { primary: "#2dd4bf", secondary: "#0d9488", glow: "rgba(45,212,191,0.35)" },
+  { primary: "#22d3ee", secondary: "#06b6d4" },
+  { primary: "#e879a0", secondary: "#db2777" },
+  { primary: "#f97316", secondary: "#ea580c" },
+  { primary: "#2dd4bf", secondary: "#0d9488" },
 ];
 
-const EMOJIS = [
-  "📚",
-  "⚛️",
-  "🧪",
-  "∑",
-  "🌍",
-  "📊",
-  "🧠",
-  "💻",
-  "🎨",
-  "🔬",
-  "📝",
-  "🏛️",
-  "🌱",
-  "⚡",
-  "🎵",
-  "🏔️",
-];
+const ICONS = ["NB", "PH", "CH", "MT", "GE", "ST", "AI", "CS", "AR", "LB", "NT", "HS"];
 
 export default function NewNotebookModal({ onClose, onAdd }) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [colorIdx, setColorIdx] = useState(0);
-  const [emoji, setEmoji] = useState("📚");
+  const [emoji, setEmoji] = useState("NB");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const c = COLORS[colorIdx];
+  const color = COLORS[colorIdx];
+
+  useEffect(() => {
+    const handleKey = (event) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+  }, [onClose]);
 
   const handleCreate = async () => {
     if (!title.trim()) {
       setError("Please enter a title");
       return;
     }
+
     setLoading(true);
+    setError("");
     try {
       await onAdd({
         title: title.trim(),
         subject: subject.trim(),
-        icon_color: c.primary,
+        icon_color: color.primary,
         emoji,
       });
       onClose();
@@ -58,314 +51,111 @@ export default function NewNotebookModal({ onClose, onAdd }) {
   };
 
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: "fixed",
-        inset: 0,
-        zIndex: 50,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "rgba(0,0,0,0.75)",
-        backdropFilter: "blur(10px)",
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          width: "500px",
-          maxHeight: "90vh",
-          overflowY: "auto",
-          borderRadius: "26px",
-          padding: "38px",
-          background: "rgba(6,9,20,0.97)",
-          backdropFilter: "blur(48px)",
-          border: "1px solid rgba(255,255,255,0.09)",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.7)",
-        }}
+    <div className="modal-backdrop" onClick={onClose} role="presentation">
+      <section
+        className="modal-panel"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="new-notebook-title"
+        onClick={(event) => event.stopPropagation()}
       >
-        <style>{`
-          .modal-input::placeholder { color: rgba(200,230,255,0.2); }
-          .modal-input:focus { outline: none; border-color: rgba(34,211,238,0.35) !important; }
-          .emoji-pick:hover { background: rgba(255,255,255,0.12) !important; transform: scale(1.1); }
-        `}</style>
-
-        <h2
-          style={{
-            fontFamily: "'Syne',sans-serif",
-            fontWeight: 800,
-            fontSize: "26px",
-            color: "#fff",
-            marginBottom: "6px",
-          }}
-        >
-          New Notebook
-        </h2>
-        <p
-          style={{
-            color: "rgba(150,200,255,0.4)",
-            fontSize: "14px",
-            marginBottom: "28px",
-          }}
-        >
-          Create a new workspace for your course
-        </p>
-
-        {error && (
-          <div
-            style={{
-              background: "rgba(248,113,113,0.1)",
-              border: "1px solid rgba(248,113,113,0.3)",
-              borderRadius: "12px",
-              padding: "12px 16px",
-              color: "#fca5a5",
-              fontSize: "14px",
-              marginBottom: "20px",
-            }}
-          >
-            {error}
-          </div>
-        )}
-
-        {/* Title */}
-        <label
-          style={{
-            color: `${c.primary}88`,
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            display: "block",
-            marginBottom: "8px",
-          }}
-        >
-          Title
-        </label>
-        <input
-          className="modal-input"
-          placeholder="e.g. Quantum Mechanics"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-          autoFocus
-          style={{
-            width: "100%",
-            padding: "13px 16px",
-            borderRadius: "12px",
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.09)",
-            color: "#fff",
-            fontSize: "15px",
-            marginBottom: "16px",
-            fontFamily: "'DM Sans',sans-serif",
-            transition: "border-color 0.2s",
-          }}
-        />
-
-        {/* Subject */}
-        <label
-          style={{
-            color: `${c.primary}88`,
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            display: "block",
-            marginBottom: "8px",
-          }}
-        >
-          Subject
-        </label>
-        <input
-          className="modal-input"
-          placeholder="e.g. Physics"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "13px 16px",
-            borderRadius: "12px",
-            background: "rgba(255,255,255,0.05)",
-            border: "1px solid rgba(255,255,255,0.09)",
-            color: "#fff",
-            fontSize: "15px",
-            marginBottom: "22px",
-            fontFamily: "'DM Sans',sans-serif",
-            transition: "border-color 0.2s",
-          }}
-        />
-
-        {/* Emoji */}
-        <label
-          style={{
-            color: `${c.primary}88`,
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            display: "block",
-            marginBottom: "10px",
-          }}
-        >
-          Emoji
-        </label>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(8,1fr)",
-            gap: "8px",
-            marginBottom: "22px",
-            padding: "14px",
-            borderRadius: "14px",
-            background: "rgba(255,255,255,0.03)",
-            border: "1px solid rgba(255,255,255,0.07)",
-          }}
-        >
-          {EMOJIS.map((em, i) => (
-            <button
-              key={i}
-              className="emoji-pick"
-              onClick={() => setEmoji(em)}
-              style={{
-                width: "44px",
-                height: "44px",
-                borderRadius: "10px",
-                fontSize: "22px",
-                background:
-                  emoji === em ? `${c.primary}22` : "rgba(255,255,255,0.05)",
-                border:
-                  emoji === em
-                    ? `2px solid ${c.primary}66`
-                    : "2px solid transparent",
-                cursor: "pointer",
-                transition: "all 0.15s",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: emoji === em ? `0 0 12px ${c.glow}` : "none",
-              }}
-            >
-              {em}
-            </button>
-          ))}
-        </div>
-
-        {/* Accent color */}
-        <label
-          style={{
-            color: `${c.primary}88`,
-            fontSize: "11px",
-            fontWeight: 700,
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            display: "block",
-            marginBottom: "12px",
-          }}
-        >
-          Accent Color
-        </label>
-        <div style={{ display: "flex", gap: "12px", marginBottom: "24px" }}>
-          {COLORS.map((col, i) => (
-            <div
-              key={i}
-              onClick={() => setColorIdx(i)}
-              style={{
-                width: "34px",
-                height: "34px",
-                borderRadius: "50%",
-                background: `linear-gradient(135deg, ${col.primary}, ${col.secondary})`,
-                cursor: "pointer",
-                transition: "all 0.2s",
-                border:
-                  colorIdx === i ? "3px solid #fff" : "3px solid transparent",
-                boxShadow: colorIdx === i ? `0 0 20px ${col.glow}` : "none",
-                transform: colorIdx === i ? "scale(1.18)" : "scale(1)",
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Preview */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "14px",
-            padding: "14px 18px",
-            borderRadius: "14px",
-            background: "rgba(255,255,255,0.04)",
-            border: `1px solid ${c.primary}22`,
-            marginBottom: "28px",
-          }}
-        >
-          <div
-            style={{
-              width: "46px",
-              height: "46px",
-              borderRadius: "12px",
-              background: `${c.primary}18`,
-              border: `1px solid ${c.primary}33`,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "22px",
-            }}
-          >
-            {emoji}
-          </div>
+        <div className="modal-header">
           <div>
-            <p style={{ color: "#fff", fontWeight: 600, fontSize: "14px" }}>
-              {title || "Notebook Title"}
-            </p>
-            <p style={{ color: c.primary, fontSize: "12px", marginTop: "2px" }}>
-              {subject || "No subject"} · 0 sections
-            </p>
+            <p className="page-eyebrow">Create</p>
+            <h2 id="new-notebook-title">New Notebook</h2>
+          </div>
+          <button
+            className="delete-icon-button"
+            type="button"
+            onClick={onClose}
+            aria-label="Close dialog"
+          >
+            <svg viewBox="0 0 24 24" className="small-icon" aria-hidden="true">
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {error && <div className="modal-error">{error}</div>}
+
+        <label className="field-label">
+          Title
+          <input
+            autoFocus
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleCreate()}
+            placeholder="Quantum Mechanics"
+          />
+        </label>
+
+        <label className="field-label">
+          Subject
+          <input
+            value={subject}
+            onChange={(event) => setSubject(event.target.value)}
+            placeholder="Physics"
+          />
+        </label>
+
+        <div>
+          <p className="field-caption">Icon</p>
+          <div className="icon-picker">
+            {ICONS.map((icon) => (
+              <button
+                key={icon}
+                className={emoji === icon ? "selected" : ""}
+                type="button"
+                onClick={() => setEmoji(icon)}
+                aria-pressed={emoji === icon}
+              >
+                {icon}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* Buttons */}
-        <div style={{ display: "flex", gap: "12px" }}>
-          <button
-            onClick={onClose}
-            style={{
-              flex: 1,
-              padding: "14px",
-              borderRadius: "14px",
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.09)",
-              color: "rgba(200,220,255,0.5)",
-              fontWeight: 600,
-              fontSize: "15px",
-              cursor: "pointer",
-              fontFamily: "'DM Sans',sans-serif",
-            }}
-          >
+        <div>
+          <p className="field-caption">Accent color</p>
+          <div className="color-picker">
+            {COLORS.map((option, index) => (
+              <button
+                key={option.primary}
+                className={index === colorIdx ? "selected" : ""}
+                style={{
+                  background: `linear-gradient(135deg, ${option.primary}, ${option.secondary})`,
+                }}
+                type="button"
+                onClick={() => setColorIdx(index)}
+                aria-label={`Use accent color ${index + 1}`}
+                aria-pressed={index === colorIdx}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="modal-preview" style={{ "--card-color": color.primary }}>
+          <span className="notebook-icon">{emoji}</span>
+          <div>
+            <h3>{title || "Notebook title"}</h3>
+            <p>{subject || "No subject"} - 0 sections</p>
+          </div>
+        </div>
+
+        <div className="modal-actions">
+          <button className="ghost-action" type="button" onClick={onClose}>
             Cancel
           </button>
           <button
+            className="primary-action"
+            type="button"
             onClick={handleCreate}
             disabled={loading}
-            style={{
-              flex: 1,
-              padding: "14px",
-              borderRadius: "14px",
-              background: `linear-gradient(135deg, ${c.primary}, ${c.secondary})`,
-              border: "none",
-              color: "#000",
-              fontWeight: 700,
-              fontSize: "15px",
-              cursor: "pointer",
-              fontFamily: "'DM Sans',sans-serif",
-              boxShadow: `0 0 40px ${c.glow}`,
-              transition: "all 0.2s",
-              opacity: loading ? 0.6 : 1,
-            }}
           >
-            {loading ? "Creating..." : "Create Notebook"}
+            {loading ? "Creating..." : "Create notebook"}
           </button>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

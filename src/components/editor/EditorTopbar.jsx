@@ -20,7 +20,7 @@ export default function EditorTopbar({
       {/* Breadcrumb */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/notebooks")}
           className="text-sm font-medium transition-opacity duration-150 hover:opacity-60"
           style={{
             color: "#22d3ee",

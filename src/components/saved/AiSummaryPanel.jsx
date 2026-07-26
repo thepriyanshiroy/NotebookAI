@@ -1,6 +1,7 @@
 export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
   return (
     <div
+      className="ai-summary-pane"
       style={{
         width: "380px",
         flexShrink: 0,
@@ -111,6 +112,7 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
 
             <button
               onClick={onClose}
+              type="button"
               style={{
                 marginTop: "12px",
                 width: "100%",

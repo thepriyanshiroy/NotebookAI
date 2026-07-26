@@ -44,8 +44,12 @@ export default function SavedPage() {
   const [summarizing, setSummarizing] = useState(false);
   const [aiText, setAiText] = useState("");
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
 
   const showSplit = previewPdf && summaryPdf && previewPdf.id === summaryPdf.id;
+  const filteredPdfs = pdfs.filter((pdf) =>
+    pdf.name.toLowerCase().includes(search.trim().toLowerCase()),
+  );
 
   useEffect(() => {
     loadPdfs();
@@ -282,9 +286,15 @@ Give:
   };
 
   return (
-    <AppLayout notebookCount={null}>
+    <AppLayout
+      notebookCount={null}
+      search={search}
+      setSearch={setSearch}
+      searchPlaceholder="Search PDFs"
+    >
       {error && (
         <div
+          className="app-error"
           style={{
             background: "rgba(239,68,68,0.15)",
             borderBottom: "1px solid rgba(239,68,68,0.4)",
@@ -301,6 +311,7 @@ Give:
           </span>
           <button
             onClick={() => setError(null)}
+            aria-label="Dismiss error"
             style={{
               background: "none",
               border: "none",
@@ -315,10 +326,10 @@ Give:
           </button>
         </div>
       )}
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <div className="saved-workspace">
         {!previewPdf && (
           <PdfList
-            pdfs={pdfs}
+            pdfs={filteredPdfs}
             loading={loading}
             uploading={uploading}
             onUpload={handleUpload}

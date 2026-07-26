@@ -29,6 +29,7 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
           {!splitMode && (
             <button
               onClick={onClose}
+              aria-label="Back to PDF list"
               style={{
                 background: "none",
                 border: "none",
@@ -61,6 +62,7 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
           {!splitMode && onSummarize && (
             <button
               onClick={() => onSummarize(pdf)}
+              type="button"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -98,6 +100,8 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
           {/* Close */}
           <button
             onClick={onClose}
+            type="button"
+            aria-label="Close PDF preview"
             style={{
               width: splitMode ? "30px" : "34px",
               height: splitMode ? "30px" : "34px",

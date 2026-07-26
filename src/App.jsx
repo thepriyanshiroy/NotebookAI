@@ -6,9 +6,11 @@ import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import DashboardPage from "./pages/DashboardPage";
 import NotebookDashboard from "./pages/NotebookDashboard";
 import NotebookEditor from "./pages/NotebookEditor";
 import SavedPage from "./pages/SavedPage";
+import SummariesPage from "./pages/SummariesPage";
 
 function App() {
   return (
@@ -22,6 +24,14 @@ function App() {
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route
             path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/notebooks"
             element={
               <ProtectedRoute>
                 <NotebookDashboard />
@@ -41,6 +51,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SavedPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/summaries"
+            element={
+              <ProtectedRoute>
+                <SummariesPage />
               </ProtectedRoute>
             }
           />

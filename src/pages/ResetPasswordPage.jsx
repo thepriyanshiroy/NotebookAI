@@ -80,6 +80,12 @@ export default function ResetPasswordPage() {
             </div>
           )}
 
+          {success && (
+            <div className="bg-green-500/10 border border-green-500/30 text-green-300 text-sm rounded-xl px-4 py-3 mb-5">
+              Password updated. Redirecting to your dashboard...
+            </div>
+          )}
+
           <form name="reset" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="flex flex-col gap-1.5">
               <label className="text-white/50 text-xs uppercase tracking-widest">

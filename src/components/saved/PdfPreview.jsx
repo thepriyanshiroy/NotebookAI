@@ -60,46 +60,6 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
         </div>
 
         <div style={{ display: "flex", gap: "10px" }}>
-          {/* AI Summary button — only in non-split mode */}
-          {!splitMode && onSummarize && (
-            <button
-              onClick={() => onSummarize(pdf)}
-              type="button"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "6px",
-                padding: "8px 18px",
-                borderRadius: "10px",
-                background: "rgba(249,115,22,0.12)",
-                border: "1px solid rgba(249,115,22,0.35)",
-                color: "#f97316",
-                fontSize: "13px",
-                fontWeight: 700,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                whiteSpace: "nowrap",
-              }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "rgba(249,115,22,0.2)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background = "rgba(249,115,22,0.12)")
-              }
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              AI Summary
-            </button>
-          )}
-
           {/* Download button */}
           <a
             href={pdf.url}

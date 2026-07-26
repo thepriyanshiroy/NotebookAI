@@ -99,35 +99,6 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
             </button>
           )}
 
-          {/* Close */}
-          <button
-            onClick={onClose}
-            type="button"
-            aria-label="Close PDF preview"
-            style={{
-              width: splitMode ? "30px" : "34px",
-              height: splitMode ? "30px" : "34px",
-              borderRadius: "8px",
-              background: "rgba(255,255,255,0.05)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              color: "rgba(255,255,255,0.5)",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "16px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "#fff";
-              e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "rgba(255,255,255,0.5)";
-              e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-            }}
-          >
-            ×
-          </button>
         </div>
       </div>
 

@@ -62,22 +62,22 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "24px",
+          padding: "16px",
           WebkitOverflowScrolling: "touch",
         }}
       >
         {/* Loading shimmer */}
         {summarizing && (
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
             {[100, 85, 92, 78, 88, 70, 95, 80].map((w, i) => (
               <div
                 key={i}
                 style={{
                   width: w + "%",
-                  height: "12px",
-                  borderRadius: "6px",
+                  height: "10px",
+                  borderRadius: "5px",
                   background: "rgba(249,115,22,0.12)",
                   animation: `pulse 1.5s ease-in-out ${i * 0.1}s infinite`,
                 }}
@@ -86,7 +86,7 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
             <p
               style={{
                 color: "rgba(249,115,22,0.5)",
-                fontSize: "13px",
+                fontSize: "12px",
                 textAlign: "center",
                 marginTop: "8px",
               }}
@@ -113,11 +113,11 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
                       color: isQuote ? "#f97316" : "rgba(215,230,255,0.82)",
                       background: isQuote ? "rgba(249,115,22,0.1)" : "transparent",
                       borderLeft: isQuote ? "3px solid #f97316" : "none",
-                      padding: isQuote ? "12px 16px" : "0",
+                      padding: isQuote ? "10px 14px" : "0",
                       borderRadius: isQuote ? "0 8px 8px 0" : "0",
-                      fontSize: "14px",
-                      lineHeight: "1.8",
-                      marginBottom: "16px",
+                      fontSize: "13px",
+                      lineHeight: "1.6",
+                      marginBottom: "12px",
                     }}
                   >
                     {text.split("**").map((chunk, j) =>
@@ -150,12 +150,12 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
                 color: "#fff",
                 border: "none",
                 borderRadius: "12px",
-                padding: "13px 24px",
+                padding: "10px 20px",
                 fontWeight: 700,
-                fontSize: "14px",
+                fontSize: "13px",
                 cursor: "pointer",
                 fontFamily: "inherit",
-                boxShadow: "0 0 24px rgba(249,115,22,0.3)",
+                boxShadow: "0 0 20px rgba(249,115,22,0.25)",
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none">

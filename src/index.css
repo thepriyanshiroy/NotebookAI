@@ -554,6 +554,11 @@ textarea:focus-visible,
 }
 
 @media (max-width: 767px) {
+  /* Prevent iOS Safari from auto-zooming on focus */
+  input, textarea, select {
+    font-size: 16px !important;
+  }
+
   .navbar {
     padding: 10px 12px !important;
     height: auto !important;
@@ -679,7 +684,6 @@ textarea:focus-visible,
     font-size: 12px !important;
   }
 
-  .mobile-notebook-screen .header-section,
   .mobile-notebook-screen .stats-grid {
     display: none !important;
   }

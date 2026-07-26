@@ -194,9 +194,11 @@ export default function NotebookDashboard() {
           className="f1 header-section"
           style={{
             display: "flex",
-            alignItems: "flex-end",
+            alignItems: "center",
             justifyContent: "space-between",
             marginBottom: "40px",
+            flexWrap: "wrap",
+            gap: "16px",
           }}
         >
           <div>
@@ -224,7 +226,7 @@ export default function NotebookDashboard() {
                 marginBottom: "8px",
               }}
             >
-              Your Notebooks
+              Notebooks
             </h1>
             <p
               style={{
@@ -321,7 +323,7 @@ export default function NotebookDashboard() {
           <div
             className="workspace-search-results"
             style={{
-              marginTop: "-24px",
+              marginTop: "10px",
               marginBottom: "32px",
               background: "rgba(255,255,255,0.04)",
               border: "1px solid rgba(255,255,255,0.08)",

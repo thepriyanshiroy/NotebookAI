@@ -113,6 +113,7 @@ export default function Sidebar({ notebookCount, className, onItemClick }) {
   const location = useLocation();
   const { user } = useAuth();
   const [dbCount, setDbCount] = useState(0);
+  const [savedCount, setSavedCount] = useState(0);
 
   const isNotebooks =
     location.pathname === "/dashboard" ||
@@ -121,16 +122,24 @@ export default function Sidebar({ notebookCount, className, onItemClick }) {
   const isSaved = location.pathname === "/saved";
 
   useEffect(() => {
-    if (notebookCount !== undefined && notebookCount !== null) return;
-    const fetchCount = async () => {
+    const fetchCounts = async () => {
       if (!user) return;
-      const { count } = await supabase
-        .from("notebooks")
+      
+      if (notebookCount === undefined || notebookCount === null) {
+        const { count: nbCount } = await supabase
+          .from("notebooks")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id);
+        setDbCount(nbCount || 0);
+      }
+
+      const { count: svCount } = await supabase
+        .from("saved_pdfs")
         .select("*", { count: "exact", head: true })
         .eq("user_id", user.id);
-      setDbCount(count || 0);
+      setSavedCount(svCount || 0);
     };
-    fetchCount();
+    fetchCounts();
   }, [notebookCount, user]);
 
   const displayCount = notebookCount ?? dbCount;
@@ -190,6 +199,7 @@ export default function Sidebar({ notebookCount, className, onItemClick }) {
         label="Saved"
         active={isSaved}
         onClick={() => handleNav("/saved")}
+        count={savedCount}
         icon={SaveIcon}
       />
 

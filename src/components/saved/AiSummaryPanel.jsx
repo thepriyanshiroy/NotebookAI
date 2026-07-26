@@ -57,7 +57,15 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
       </div>
 
       {/* Content */}
-      <div style={{ flex: 1, overflowY: "auto", padding: "24px" }}>
+      <div
+        className="ai-summary-content"
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px",
+          WebkitOverflowScrolling: "touch",
+        }}
+      >
         {/* Loading shimmer */}
         {summarizing && (
           <div

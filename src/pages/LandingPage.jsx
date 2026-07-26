@@ -6,7 +6,7 @@ export default function LandingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center text-center px-6"
+      className="fixed inset-0 overflow-hidden flex flex-col items-center justify-center text-center px-6"
       style={{
         backgroundImage: `url(${bg})`,
         backgroundSize: "cover",

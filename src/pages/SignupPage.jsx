@@ -16,6 +16,7 @@ export default function SignupPage() {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const {
@@ -28,10 +29,16 @@ export default function SignupPage() {
 
   const onSubmit = (data) => {
     setError("");
+    setSuccess(false);
     startTransition(async () => {
       try {
-        await signUp({ email: data.email, password: data.password, full_name: data.fullName });
-        navigate("/dashboard");
+        const response = await signUp({ email: data.email, password: data.password, full_name: data.fullName });
+        
+        if (response?.user && !response?.session) {
+          setSuccess(true);
+        } else {
+          navigate("/dashboard");
+        }
       } catch (err) {
         setError(err.message);
       }
@@ -82,6 +89,13 @@ export default function SignupPage() {
           {error && (
             <div className="bg-red-500/10 border border-red-500/30 text-red-300 text-sm rounded-xl px-4 py-3 mb-5">
               {error}
+            </div>
+          )}
+
+          {/* Success */}
+          {success && (
+            <div className="bg-green-500/10 border border-green-500/30 text-green-300 text-sm rounded-xl px-4 py-3 mb-5">
+              Account created! Please check your email to confirm your account.
             </div>
           )}
 

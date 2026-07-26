@@ -825,6 +825,12 @@ textarea:focus-visible,
     display: block !important;
   }
 
+  .modal-panel {
+    max-height: 90dvh !important;
+    padding: 24px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
   .ProseMirror { padding: 16px !important; }
   .blob-cyan, .blob-pink, .blob-orange { display: none !important; }
 }

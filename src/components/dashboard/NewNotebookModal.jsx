@@ -7,13 +7,13 @@ const COLORS = [
   { primary: "#2dd4bf", secondary: "#0d9488" },
 ];
 
-const ICONS = ["NB", "PH", "CH", "MT", "GE", "ST", "AI", "CS", "AR", "LB", "NT", "HS"];
+const ICONS = ["📓", "📘", "🎓", "🔬", "📐", "💻", "🧠", "🧬", "🚀", "💡", "📝", "🎨"];
 
 export default function NewNotebookModal({ onClose, onAdd }) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [colorIdx, setColorIdx] = useState(0);
-  const [emoji, setEmoji] = useState("NB");
+  const [emoji, setEmoji] = useState("📓");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

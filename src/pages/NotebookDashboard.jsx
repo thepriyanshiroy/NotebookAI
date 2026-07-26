@@ -19,6 +19,8 @@ export default function NotebookDashboard() {
   const isNotebookScreen = location.pathname === "/notebooks";
   const isDashboard = location.pathname === "/dashboard";
 
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
@@ -54,6 +56,7 @@ export default function NotebookDashboard() {
 
   const fetchNotebooks = async () => {
     try {
+      setLoading(true);
       const data = await getNotebooks();
       setNotebooks(data || []);
       const notebookIds = (data || []).map((notebook) => notebook.id);
@@ -78,9 +81,15 @@ export default function NotebookDashboard() {
     setNotebooks((prev) => [nb, ...prev]);
   };
 
-  const handleDelete = async (id) => {
-    await deleteNotebook(id);
-    setNotebooks((prev) => prev.filter((n) => n.id !== id));
+  const handleDelete = (id) => {
+    setDeleteConfirmId(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteConfirmId) return;
+    await deleteNotebook(deleteConfirmId);
+    setNotebooks((prev) => prev.filter((n) => n.id !== deleteConfirmId));
+    setDeleteConfirmId(null);
   };
 
   const filtered = notebooks.filter(
@@ -532,6 +541,52 @@ export default function NotebookDashboard() {
 
       {showModal && (
         <NewNotebookModal onClose={() => setShowModal(false)} onAdd={handleAdd} />
+      )}
+
+      {deleteConfirmId && (
+        <div className="modal-backdrop" onClick={() => setDeleteConfirmId(null)} role="presentation">
+          <div 
+            className="modal-panel" 
+            role="dialog"
+            onClick={(e) => e.stopPropagation()} 
+            style={{ width: "min(400px, 90vw)", textAlign: "center", padding: "32px 24px" }}
+          >
+            <div style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "50%",
+              background: "rgba(239,68,68,0.15)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto 16px",
+            }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <h3 style={{ color: "#fff", marginBottom: "12px", fontSize: "20px", fontFamily: "'Syne', sans-serif" }}>Delete Notebook?</h3>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "14px", marginBottom: "28px" }}>
+              Are you sure you want to delete this notebook? All its sections and notes will be permanently lost.
+            </p>
+            <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+              <button 
+                className="ghost-action" 
+                onClick={() => setDeleteConfirmId(null)}
+                style={{ flex: 1, padding: "12px" }}
+              >
+                Cancel
+              </button>
+              <button 
+                className="primary-action" 
+                onClick={confirmDelete}
+                style={{ flex: 1, padding: "12px", background: "linear-gradient(135deg, #ef4444, #dc2626)", boxShadow: "0 0 20px rgba(239,68,68,0.3)" }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </AppLayout>
   );

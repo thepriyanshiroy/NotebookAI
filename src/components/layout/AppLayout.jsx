@@ -13,7 +13,7 @@ export default function AppLayout({ children, notebookCount, search, setSearch, 
   return (
     <div
       style={{
-        height: "100vh",
+        height: "100dvh",
         display: "flex",
         flexDirection: "column",
         overflow: "hidden",
@@ -48,7 +48,7 @@ export default function AppLayout({ children, notebookCount, search, setSearch, 
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
-            height: 100vh !important;
+            height: 100dvh !important;
             width: 280px !important;
             flex-direction: column !important;
             padding: 32px 24px !important;
@@ -96,7 +96,7 @@ export default function AppLayout({ children, notebookCount, search, setSearch, 
           zIndex: 10,
           display: "flex",
           flexDirection: "column",
-          height: "100vh",
+          height: "100dvh",
         }}
       >
         {!hideNavbar && (

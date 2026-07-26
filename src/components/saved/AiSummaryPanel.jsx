@@ -24,6 +24,22 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
           borderBottom: "1px solid rgba(255,255,255,0.07)",
         }}
       >
+        <button
+          className="mobile-summary-back"
+          onClick={onClose}
+          aria-label="Back to PDF list"
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            color: "rgba(255,255,255,0.5)",
+            fontSize: "18px",
+            padding: "4px 8px 4px 0",
+            display: "none",
+          }}
+        >
+          ←
+        </button>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
           <path
             d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"

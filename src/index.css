@@ -796,6 +796,10 @@ textarea:focus-visible,
     width: 100% !important;
   }
 
+  .mobile-summary-back {
+    display: block !important;
+  }
+
   .ProseMirror { padding: 16px !important; }
   .blob-cyan, .blob-pink, .blob-orange { display: none !important; }
 }

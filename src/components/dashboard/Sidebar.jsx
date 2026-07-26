@@ -192,14 +192,12 @@ export default function Sidebar({ notebookCount, className, onItemClick }) {
         label="Notebooks"
         active={isNotebooks}
         onClick={() => handleNav("/notebooks")}
-        count={displayCount}
         icon={BookIcon}
       />
       <NavBtn
         label="Saved"
         active={isSaved}
         onClick={() => handleNav("/saved")}
-        count={savedCount}
         icon={SaveIcon}
       />
 

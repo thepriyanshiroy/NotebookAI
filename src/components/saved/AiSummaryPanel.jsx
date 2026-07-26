@@ -62,7 +62,7 @@ export default function AiSummaryPanel({ summarizing, aiText, error, onClose }) 
         style={{
           flex: 1,
           overflowY: "auto",
-          padding: "16px",
+          padding: "12px",
           WebkitOverflowScrolling: "touch",
         }}
       >

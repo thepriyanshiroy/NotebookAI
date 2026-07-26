@@ -40,7 +40,7 @@ export default function ResetPasswordPage() {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-no-repeat flex flex-col"
+      className="fixed inset-0 overflow-y-auto bg-cover bg-center bg-no-repeat flex flex-col"
       style={{ backgroundImage: `url(${bg})` }}
     >
       <nav className="px-8 py-5">

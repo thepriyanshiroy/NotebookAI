@@ -9,6 +9,8 @@ export default function PdfPreview({ pdf, splitMode, onClose, onSummarize }) {
         overflow: "hidden",
         background: "rgba(3,4,14,0.92)",
         borderRight: splitMode ? "1px solid rgba(255,255,255,0.07)" : "none",
+        borderRadius: "16px",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
       }}
     >
       {/* Topbar */}

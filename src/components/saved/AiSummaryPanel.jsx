@@ -8,6 +8,8 @@ export default function AiSummaryPanel({ summarizing, aiText, onClose }) {
         display: "flex",
         flexDirection: "column",
         background: "rgba(4,5,16,0.96)",
+        borderRadius: "16px",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.4)",
       }}
     >
       {/* Header */}

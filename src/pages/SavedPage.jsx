@@ -205,8 +205,7 @@ export default function SavedPage() {
         {
           method: "POST",
           headers: { 
-            "Content-Type": "application/json",
-            "Authorization": token ? `Bearer ${token}` : ""
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             contents: [
@@ -361,15 +360,17 @@ Give:
         )}
 
         {previewPdf && !showSplit && (
-          <PdfPreview
-            pdf={previewPdf}
-            onClose={() => setPreviewPdf(null)}
-            onSummarize={handleSummarize}
-          />
+          <div style={{ flex: 1, display: "flex", padding: "16px", overflow: "hidden" }}>
+            <PdfPreview
+              pdf={previewPdf}
+              onClose={() => setPreviewPdf(null)}
+              onSummarize={handleSummarize}
+            />
+          </div>
         )}
 
         {showSplit && (
-          <div className="pdf-split-view" style={{ flex: 1, display: "flex" }}>
+          <div className="pdf-split-view" style={{ flex: 1, display: "flex", padding: "16px", gap: "16px", overflow: "hidden" }}>
             <PdfPreview pdf={previewPdf} splitMode onClose={closeAll} />
             <AiSummaryPanel
               summarizing={summarizing}

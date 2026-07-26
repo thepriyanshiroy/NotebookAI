@@ -33,22 +33,22 @@ const MenuBar = ({ editor }) => {
         flexWrap: "wrap",
       }}
     >
-      <button onClick={() => editor.chain().focus().toggleBold().run()} style={btnStyle(editor.isActive('bold'))}>B</button>
-      <button onClick={() => editor.chain().focus().toggleItalic().run()} style={btnStyle(editor.isActive('italic'))}>I</button>
-      <button onClick={() => editor.chain().focus().toggleUnderline().run()} style={btnStyle(editor.isActive('underline'))}>U</button>
-      <button onClick={() => editor.chain().focus().toggleStrike().run()} style={btnStyle(editor.isActive('strike'))}>S</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleBold().run()} style={btnStyle(editor.isActive('bold'))}>B</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleItalic().run()} style={btnStyle(editor.isActive('italic'))}>I</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleUnderline().run()} style={btnStyle(editor.isActive('underline'))}>U</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleStrike().run()} style={btnStyle(editor.isActive('strike'))}>S</button>
       
       <div style={{ width: "1px", background: "rgba(255,255,255,0.15)", margin: "4px 4px" }} />
       
-      <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} style={btnStyle(editor.isActive('heading', { level: 1 }))}>H1</button>
-      <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} style={btnStyle(editor.isActive('heading', { level: 2 }))}>H2</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} style={btnStyle(editor.isActive('heading', { level: 1 }))}>H1</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} style={btnStyle(editor.isActive('heading', { level: 2 }))}>H2</button>
       
       <div style={{ width: "1px", background: "rgba(255,255,255,0.15)", margin: "4px 4px" }} />
 
-      <button onClick={() => editor.chain().focus().toggleBulletList().run()} style={btnStyle(editor.isActive('bulletList'))}>• List</button>
-      <button onClick={() => editor.chain().focus().toggleOrderedList().run()} style={btnStyle(editor.isActive('orderedList'))}>1. List</button>
-      <button onClick={() => editor.chain().focus().toggleBlockquote().run()} style={btnStyle(editor.isActive('blockquote'))}>Quote</button>
-      <button onClick={() => editor.chain().focus().toggleCodeBlock().run()} style={btnStyle(editor.isActive('codeBlock'))}>Code</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleBulletList().run()} style={btnStyle(editor.isActive('bulletList'))}>• List</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleOrderedList().run()} style={btnStyle(editor.isActive('orderedList'))}>1. List</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleBlockquote().run()} style={btnStyle(editor.isActive('blockquote'))}>Quote</button>
+      <button onMouseDown={(e) => e.preventDefault()} onClick={() => editor.chain().focus().toggleCodeBlock().run()} style={btnStyle(editor.isActive('codeBlock'))}>Code</button>
     </div>
   )
 }
@@ -102,6 +102,10 @@ export default function RichTextEditor({ content, onChange }) {
             height: 0;
             pointer-events: none;
           }
+          .ProseMirror b, .ProseMirror strong { font-weight: 700; color: #fff; }
+          .ProseMirror i, .ProseMirror em { font-style: italic; }
+          .ProseMirror u { text-decoration: underline; }
+          .ProseMirror s { text-decoration: line-through; color: rgba(255,255,255,0.4); }
           .ProseMirror h1 { font-size: 2em; font-weight: bold; margin-bottom: 0.5em; color: white; }
           .ProseMirror h2 { font-size: 1.5em; font-weight: bold; margin-bottom: 0.5em; color: white; }
           .ProseMirror h3 { font-size: 1.17em; font-weight: bold; margin-bottom: 0.5em; color: white; }

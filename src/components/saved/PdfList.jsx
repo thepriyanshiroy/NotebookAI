@@ -9,6 +9,10 @@ export default function PdfList({
   onSummarize,
   onDelete,
 }) {
+  const hour = new Date().getHours();
+  const greeting =
+    hour < 12 ? "Good Morning" : hour < 17 ? "Good Afternoon" : "Good Evening";
+
   return (
     <div
       style={{
@@ -19,33 +23,50 @@ export default function PdfList({
       }}
     >
       <div
-        className="pdf-list-header"
+        className="f1 header-section pdf-list-header"
         style={{
           display: "flex",
-          alignItems: "flex-start",
+          alignItems: "center",
           justifyContent: "space-between",
-          padding: "32px 44px 24px",
+          padding: "44px 56px",
+          marginBottom: "0px",
+          flexWrap: "wrap",
+          gap: "16px",
           flexShrink: 0,
         }}
       >
         <div>
+          <p
+            style={{
+              color: "rgba(34,211,238,0.55)",
+              fontSize: "12px",
+              fontWeight: 700,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            {greeting}
+          </p>
           <h1
             style={{
               fontFamily: "'Syne',sans-serif",
               fontWeight: 800,
-              fontSize: "36px",
+              fontSize: "48px",
               color: "#fff",
-              margin: 0,
-              letterSpacing: "-0.02em",
+              letterSpacing: "-0.03em",
+              lineHeight: 1.05,
+              textShadow: "0 0 80px rgba(34,211,238,0.18)",
+              marginBottom: "8px",
             }}
           >
-            Saved PDFs
+            PDFs
           </h1>
           <p
             style={{
               color: "rgba(150,200,255,0.4)",
-              fontSize: "13px",
-              margin: "6px 0 0",
+              fontSize: "14px",
+              fontWeight: 500,
             }}
           >
             {pdfs.length} document{pdfs.length !== 1 ? "s" : ""}
@@ -59,19 +80,24 @@ export default function PdfList({
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "8px",
+            gap: "10px",
             background: uploading
               ? "rgba(34,211,238,0.4)"
-              : "linear-gradient(135deg,#22d3ee,#06b6d4)",
+              : "linear-gradient(135deg, #22d3ee, #06b6d4)",
             color: "#000",
             border: "none",
-            borderRadius: "13px",
-            padding: "12px 22px",
+            borderRadius: "16px",
+            padding: "15px 32px",
             fontWeight: 700,
-            fontSize: "14px",
+            fontSize: "16px",
             cursor: uploading ? "not-allowed" : "pointer",
-            fontFamily: "inherit",
-            boxShadow: "0 0 28px rgba(34,211,238,0.35)",
+            fontFamily: "'DM Sans',sans-serif",
+            boxShadow: uploading 
+              ? "none" 
+              : "0 0 40px rgba(34,211,238,0.6), 0 4px 20px rgba(0,0,0,0.35)",
+            flexShrink: 0,
+            letterSpacing: "0.01em",
+            transition: "box-shadow 0.2s",
           }}
         >
           {uploading ? (
@@ -90,11 +116,7 @@ export default function PdfList({
             </>
           ) : (
             <>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <polyline points="17 8 12 3 7 8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                <line x1="12" y1="3" x2="12" y2="15" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-              </svg>
+              <span style={{ fontSize: "22px", lineHeight: 1 }}>+</span>
               Upload PDF
             </>
           )}

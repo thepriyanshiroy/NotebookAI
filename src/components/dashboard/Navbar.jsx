@@ -46,7 +46,6 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
 
   return (
     <div
-      className="navbar-container"
       style={{
         padding: "14px 20px 0 20px",
         position: "sticky",
@@ -64,66 +63,9 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
         .back-btn { transition: all 0.2s; }
         .back-btn:hover { background: rgba(34,211,238,0.1) !important; color: #22d3ee !important; }
         
-        .navbar-container { padding: 14px 20px 0 20px; position: sticky; top: 0; z-index: 30; }
-        
-        @media (max-width: 1024px) {
-          .nav-left, .nav-right { width: auto !important; }
-          .nav-search-wrapper { width: 100% !important; max-width: 400px !important; }
-        }
-        
         @media (max-width: 767px) {
-          .navbar-container { padding: 10px 12px 0 12px !important; }
-          .navbar {
-            padding: 0 12px !important;
-            height: 60px !important;
-            border-radius: 12px !important;
-            gap: 8px !important;
-          }
-          .nav-left { gap: 6px !important; }
-          .nav-right { gap: 8px !important; flex-shrink: 1 !important; }
-          .nav-brand-button { gap: 6px !important; }
-          .nav-logo-mark {
-            width: 30px !important;
-            height: 30px !important;
-            font-size: 15px !important;
-          }
-          .nav-logo-text {
-            font-size: 16px !important;
-          }
-          
-          /* Show search icon button instead of full search bar, or just shrink it */
-          .nav-search-wrapper {
-             max-width: 100% !important;
-          }
-          .nav-search {
-            padding-left: 36px !important;
-            padding-right: 12px !important;
-            font-size: 13px !important;
-          }
-          .nav-search-icon {
-            left: 12px !important;
-            width: 14px !important;
-            height: 14px !important;
-          }
-          
-          /* Hide non-essential elements on mobile */
-          .nav-right-name, .nav-divider, .logout-btn {
-            display: none !important;
-          }
-          
-          .nav-avatar {
-            width: 32px !important;
-            height: 32px !important;
-            font-size: 12px !important;
-          }
-          .mobile-menu-btn {
-            display: flex !important;
-          }
-        }
-        
-        @media (max-width: 400px) {
-          .nav-logo-text { display: none !important; } /* Hide 'NotebookAI' text on very small screens to fit search */
-          .nav-search-wrapper { flex: 1 !important; }
+          .nav-logo-text { font-size: 14px !important; }
+          .nav-logo-mark { width: 32px !important; height: 32px !important; font-size: 14px !important; }
         }
       `}</style>
 
@@ -132,7 +74,6 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
         style={{
           display: "flex",
           alignItems: "center",
-          justifyContent: "space-between",
           padding: "0 40px",
           height: "70px",
           borderRadius: "18px",
@@ -232,9 +173,8 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
         </div>
 
         <div className="nav-center" style={{ flex: 1, display: "flex", justifyContent: "center" }}>
-          <div className="nav-search-wrapper" style={{ position: "relative", width: "100%", maxWidth: "520px" }}>
+          <div className="nav-search-wrapper" style={{ position: "relative", width: "520px" }}>
             <svg
-              className="nav-search-icon"
               style={{
                 position: "absolute",
                 left: "18px",
@@ -313,7 +253,6 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
           </button>
 
           <span
-            className="nav-right-name"
             style={{
               color: "rgba(200,225,255,0.75)",
               fontSize: "15px",

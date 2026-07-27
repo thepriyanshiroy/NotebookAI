@@ -72,7 +72,7 @@ export default function LandingPage() {
           className="font-extrabold leading-none tracking-tight"
           style={{
             fontFamily: "'Syne', sans-serif",
-            fontSize: "clamp(40px, 10vw, 100px)",
+            fontSize: "clamp(32px, 8vw, 100px)",
           }}
         >
           <span className="text-white">Notebook</span>

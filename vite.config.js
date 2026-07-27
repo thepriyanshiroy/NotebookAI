@@ -12,6 +12,7 @@ export default defineConfig(({ mode }) => {
       format: "es",
     },
     server: {
+      host: true,
       proxy: {
         "/api/gemini": {
           target: "https://generativelanguage.googleapis.com",

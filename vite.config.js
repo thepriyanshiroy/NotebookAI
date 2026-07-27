@@ -18,6 +18,11 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: () =>
             `/v1beta/models/gemini-2.5-flash:generateContent?key=${env.VITE_GEMINI_API_KEY}`,
+          configure: (proxy, _options) => {
+            proxy.on('proxyReq', (proxyReq, req, _res) => {
+              proxyReq.removeHeader('Authorization');
+            });
+          },
         },
       },
     },

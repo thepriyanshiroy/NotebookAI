@@ -8,7 +8,10 @@ import AiSummaryPanel from "../components/saved/AiSummaryPanel";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfWorker from "pdfjs-dist/build/pdf.worker.min.js?url";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker;
+const pdfjs = pdfjsLib.default || pdfjsLib;
+if (pdfjs.GlobalWorkerOptions) {
+  pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+}
 
 // 🔥 Retry helper for Gemini API
 const fetchWithRetry = async (url, options, retries = 3, delay = 1000) => {
@@ -176,7 +179,7 @@ export default function SavedPage() {
       }
 
       // 🔥 Extract text
-      const pdfDoc = await pdfjsLib.getDocument(urlData.signedUrl).promise;
+      const pdfDoc = await pdfjs.getDocument(urlData.signedUrl).promise;
 
       let fullText = "";
       const maxPages = Math.min(pdfDoc.numPages, 10); // reduce load
@@ -207,7 +210,8 @@ export default function SavedPage() {
         {
           method: "POST",
           headers: { 
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
           },
           body: JSON.stringify({
             contents: [

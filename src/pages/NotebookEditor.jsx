@@ -253,6 +253,29 @@ export default function NotebookEditor() {
       >
         <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
           <button
+            className="editor-mobile-back"
+            onClick={() => navigate("/notebooks")}
+            type="button"
+            aria-label="Back to notebooks"
+            style={{
+              display: "none",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "36px",
+              height: "36px",
+              borderRadius: "10px",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              color: "#22d3ee",
+              cursor: "pointer",
+              flexShrink: 0,
+            }}
+          >
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+              <polyline points="15 18 9 12 15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
             className="editor-mobile-menu"
             onClick={() => setSectionDrawerOpen(true)}
             type="button"

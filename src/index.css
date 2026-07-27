@@ -734,7 +734,8 @@ textarea:focus-visible,
     display: block;
   }
 
-  .editor-mobile-menu {
+  .editor-mobile-menu,
+  .editor-mobile-back {
     display: inline-flex !important;
   }
 

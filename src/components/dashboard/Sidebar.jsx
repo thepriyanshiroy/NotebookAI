@@ -116,7 +116,6 @@ export default function Sidebar({ notebookCount, className, onItemClick }) {
   const [savedCount, setSavedCount] = useState(0);
 
   const isNotebooks =
-    location.pathname === "/dashboard" ||
     location.pathname === "/notebooks" ||
     location.pathname.startsWith("/notebook");
   const isSaved = location.pathname === "/saved";

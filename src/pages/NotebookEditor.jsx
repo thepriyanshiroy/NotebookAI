@@ -330,29 +330,6 @@ export default function NotebookEditor() {
         </div>
 
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          {saved && (
-            <span
-              style={{
-                color: "#22d3ee",
-                fontSize: "13px",
-                fontWeight: 500,
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-                <polyline
-                  points="20 6 9 17 4 12"
-                  stroke="#22d3ee"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              Saved
-            </span>
-          )}
           <button
             onClick={handleSave}
             style={{
@@ -372,30 +349,24 @@ export default function NotebookEditor() {
               transition: "all 0.2s",
             }}
           >
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
-              <path
-                d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <polyline
-                points="17 21 17 13 7 13 7 21"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <polyline
-                points="7 3 7 8 15 8"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            Save
+            {saved ? (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <polyline
+                  points="20 6 9 17 4 12"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            ) : (
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+                <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="17 21 17 13 7 13 7 21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <polyline points="7 3 7 8 15 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
+            {saved ? "Saved" : "Save"}
           </button>
         </div>
       </div>

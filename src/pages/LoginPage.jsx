@@ -32,7 +32,7 @@ export default function LoginPage() {
         await signIn({ email: data.email, password: data.password });
         navigate("/dashboard");
       } catch (err) {
-        setError(err.message);
+        setError(err.message === "{}" ? "Authentication failed. Please check your SendGrid configuration in Supabase." : err.message);
       }
     });
   };

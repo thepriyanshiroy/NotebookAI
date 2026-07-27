@@ -20,9 +20,14 @@ export default function Navbar({ search, setSearch, onMenuClick }) {
   const firstName = fullName.split(" ")[0];
 
   const handleLogout = async () => {
-    await signOut();
-    setProfileOpen(false);
-    navigate("/login");
+    try {
+      await signOut();
+    } catch (err) {
+      console.error("Logout error:", err);
+    } finally {
+      setProfileOpen(false);
+      navigate("/login");
+    }
   };
 
   const handleBack = () => {

@@ -40,7 +40,7 @@ export default function SignupPage() {
           navigate("/dashboard");
         }
       } catch (err) {
-        setError(err.message);
+        setError(err.message === "{}" ? "Failed to send confirmation email. Please check your SendGrid configuration in Supabase (API key or verified sender email)." : err.message);
       }
     });
   };

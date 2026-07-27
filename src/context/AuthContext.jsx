@@ -86,8 +86,20 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    try {
+      await supabase.auth.signOut();
+    } catch (err) {
+      console.warn("Server signout error:", err);
+    } finally {
+      setSession(null);
+      setUser(null);
+      // Force clear Supabase local storage tokens
+      for (let key in localStorage) {
+        if (key.startsWith("sb-") && key.endsWith("-auth-token")) {
+          localStorage.removeItem(key);
+        }
+      }
+    }
   };
 
   const resetPasswordForEmail = async (email, redirectTo) => {

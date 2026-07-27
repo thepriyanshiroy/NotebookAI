@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
         redirectTo: `${window.location.origin}/reset-password`,
       });
       if (error) {
-        setError(error.message);
+        setError(error.message === "{}" ? "Failed to send email. Please check your SendGrid configuration in Supabase (API key or verified sender email)." : error.message);
       } else {
         setSuccess(true);
       }
